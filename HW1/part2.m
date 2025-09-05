@@ -1,9 +1,9 @@
-clc; clear all; close all; format compact
+clc; clearvars; close all; format compact
 
 % Constants
-N = 10; % just picking a value atp
+N = 30; % just picking a value atp
 h = 2/N;
-alpha = .25; % just picking a value atp
+alpha = .9; % just picking a value atp
 k = h^2 / 2*alpha;
 nu = alpha*k/h^2;
 
@@ -12,8 +12,7 @@ i = 0:N;
 x = -1 + i*h;
 
 % Define t axis
-% j = i;
-j = 0:.5:2*N;
+j = 0:4*N;
 t = j*k;
 
 % Define original heat distribution
@@ -25,6 +24,8 @@ u(1, end) = 0; % initial condition
 
 % now, theres a matrix where each column is a temp at a position x, and
 % each row represents a time step at each position
+
+% Create the A matrix in the textbook
 A = spdiags([nu, 1-2*nu, nu], -1:1, N+1, N+1);
 A = full(A);
 
@@ -35,24 +36,9 @@ for a = 1:numel(j)-1
     u(a+1, :) = u_next';
 end
 
-[X, Y] = meshgrid(i, j);
+[X, T] = meshgrid(x, t);
 figure()
-surf(X, Y, u);
+surf(X, T, u);
 xlabel('Position')
 ylabel('Time')
 zlabel('Temperature')
-
-
-
-% h = 2/N;
-% alpha = 1;
-% 
-% k = h^2 / (2 * alpha);
-% nu = alpha*k/h^2;
-
-
-% 
-% num_cols = 5;
-% 
-
-
