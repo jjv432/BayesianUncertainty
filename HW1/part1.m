@@ -1,5 +1,5 @@
 %% Setup
-clc; clear all; close all; format compact
+clc; clearvars; close all; format compact
 
 %% Parameters
 beta = 0.005;
@@ -24,8 +24,7 @@ init_SIR = [So; Io; Ro];
 [T, Y] = ode45(@(T, Y) SIR(T, Y, params), time_int, init_SIR);
 
 %% Plotting
-
-figure();
+figure(1);
 hold on
 plot(T, Y(:, 2), 'DisplayName', 'SIR', 'Linewidth', 3);
 
@@ -44,6 +43,10 @@ hold off
 grid on
 legend()
 title("I(t)");
+
+
+%% Discussion
+type q1discussion.txt
 
 %% SIR ODE
 function dY = SIR(t, Y, params)
@@ -72,7 +75,6 @@ function dY = SEIR(t, Y, params)
     N = params(4);
     alpha = params(5);
 
-
     S = Y(1);
     I = Y(2);
     R = Y(3);
@@ -86,36 +88,3 @@ function dY = SEIR(t, Y, params)
     dY = [dS; dI; dR; dE];
 
 end
-
-
-
-
-
-
-
-
-
-
-
-% alphas = [2.1, 1.5, 1, .5];
-% figure();
-% grid on
-% legend()
-% title("I(t)");
-% hold on
-% for i = 1:length(alphas)
-%     alpha = alphas(i);
-%     %% Simulation
-%     latency = 1/alpha;
-%
-%     init = [So; Io; Ro];
-%     alpha = 2.1;
-%     [T1, Y1] = ode45(@(T, Y) funcs(T, Y, params), time_int, init);
-%
-%     %% Plotting
-%
-%     plot(T1, Y1(:, 2), 'DisplayName', '\alpha_1: ' + string(round(latency, 2)));
-%
-% end
-% hold off
-%

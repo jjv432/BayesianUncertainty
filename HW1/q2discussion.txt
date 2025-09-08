@@ -1,0 +1,6 @@
+For this exercise, an intial temperature distribution is set to be T=0 
+at either extreme and T=1 at every intermediate point. Then, the 
+temperature distribution across the bar is found as a function of time 
+and space. The results of this process show a heat distribution that 
+matches the expectations. The heat is greates at the middle of the bar 
+and decreases non-linearly to the end of the bar.

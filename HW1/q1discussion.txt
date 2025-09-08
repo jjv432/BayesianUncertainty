@@ -1,0 +1,9 @@
+The figure created demonstrates that with increasing values of alpha, 
+the SEIR model approaches the SIR model. The error between these two 
+curves is logarithmically related to the size of alpha.
+
+The magnitude of E is inversely proportional to the magnitude of alpha. 
+Therefore, with smaller alpha values, the SEIR curve has more latency as 
+the Exposure rate has a larger impact on the behavior. As alpha gets 
+larger and larger, the magnitude of the exposure curve has less and less 
+impact on the infection rate.

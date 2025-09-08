@@ -1,0 +1,15 @@
+In this problem, q3.2 is redone but with a different method to solve for 
+successive temperature distributions. In Figure 1, we see that the 
+temperature distribution is the same as it was in q2. This is because in 
+this plot, the same value of k (temporal stepsize) was used. The method 
+used in q3.2 was limited to a maximum value of k. This means that a larger 
+number of calculations must be completed in order to represent a large 
+timespan.
+
+Figure 2 shows why this new method is useful. This figure was generated 
+using the same number of temporal steps, but is able to simulate a much 
+longer span of time. This is useful as it lets us predict the 
+temperature distribution as long as is needed without sacrificing 
+compute time. In a more complex problem with more dimensions, this issue 
+of more compute time would only compound upon itself, making solving 
+time exponentially longer.
