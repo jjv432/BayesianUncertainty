@@ -1,0 +1,27 @@
+clc; clear; close all
+
+load energy_data.mat
+
+figure()
+plot(P, psi, 'DisplayName', 'Data')
+legend()
+
+%% Part 1
+numVars = 3;
+costFunctionHandle = @(theta, numVars) CostFunction(theta, P, psi);
+
+optimalTheta = particleswarm(costFunctionHandle);
+
+function cost = CostFunction(theta, xData, yData)
+    
+    xData = xData(:);
+    numParams = numel(theta);
+
+    for i = 1:numParams
+        xVals(:, i) = xData.^i;
+    end
+
+    simulatedY = xVals * theta;
+
+    cost = sum(abs(yData - simulatedY));
+end
