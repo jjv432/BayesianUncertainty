@@ -1,27 +1,52 @@
-clc; clear; close all
+clc; clearvars -except P psi; close all
 
 load energy_data.mat
 
-figure()
-plot(P, psi, 'DisplayName', 'Data')
-legend()
-
 %% Part 1
-numVars = 3;
+
+% Setting up a particle swarm optimization to guess the coefficients the
+% model should use
+
+numVars = 6; % order of the model
+
+% Bounds that the particles can guesss between
+LB = -10 * ones(numVars,1);
+UB = 20* ones(numVars, 1);
+
+% Cost function used by the particle swarm
 costFunctionHandle = @(theta, numVars) CostFunction(theta, P, psi);
 
-optimalTheta = particleswarm(costFunctionHandle);
+% Run particle swarm
+optimalTheta = particleswarm(costFunctionHandle, numVars, LB, UB);
 
-function cost = CostFunction(theta, xData, yData)
-    
-    xData = xData(:);
-    numParams = numel(theta);
+% Create y vals based on the optimized coefficients
+modelPsi = myPolynomialFunc(P, optimalTheta);
+
+% Pl
+figure()
+hold on
+plot(P, psi, 'DisplayName', 'Data')
+plot(P, modelPsi, 'DisplayName', 'Model')
+legend()
+
+%% Functions
+
+function yVals = myPolynomialFunc(xVals, coeff)
+    xVals = xVals(:);
+    numParams = numel(coeff);
 
     for i = 1:numParams
-        xVals(:, i) = xData.^i;
+        xMat(:, i) = xVals.^i;
     end
 
-    simulatedY = xVals * theta;
+    yVals = xMat * coeff';
+end
 
-    cost = sum(abs(yData - simulatedY));
+
+function cost = CostFunction(theta, xData, yData)
+
+    simulatedY = myPolynomialFunc(xData,theta);
+
+    cost = sum(abs(yData' - simulatedY));
+    % cost = sum((xData).^.25 .*abs(yData - simulatedY'));
 end
