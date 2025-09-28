@@ -1,0 +1,329 @@
+
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html><head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+   <!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      --><title>main</title><meta name="generator" content="MATLAB 8.3"><link rel="schema.DC" href="http://purl.org/dc/elements/1.1/"><meta name="DC.date" content="2016-03-06"><meta name="DC.source" content="main.m"><style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; } 
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style></head><body><div class="content"><pre class="codeinput">clear <span class="string">all</span>
+<span class="comment">%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%</span>
+</pre><p>The following code analyzes fictitious data for a stress-strain curve of a quasi-linear elastic material.  The linear stress model is</p><p><img src="main_eq99784.png" alt="$$\sigma = E \epsilon$$"></p><p>where <img src="main_eq24873.png" alt="$\sigma$"> is the stress, <img src="main_eq97780.png" alt="$\epsilon$"> is the strain, and <img src="main_eq85525.png" alt="$E$"> is the modulus.  For the nonlinear case, we consider third order dependence on the strain and introduce a second elastic parameter</p><p><img src="main_eq26253.png" alt="$$\sigma = E \epsilon + E_2 \epsilon^3$$"></p><p>where <img src="main_eq97540.png" alt="$E_2$"> is the higher order elastic parameter.  This model requires uncommenting lines of code with ***NONLINEAR****** commented at the end of the line.  Also note that there are two additional lines in the function "elastic_model_Bayesian.m" that must also be uncommented to run the nonlinear case.</p><p>The first few commented lines of code below can be uncommented and re-ran to create different fictitious stress data given a set of strain data.  Currently the stress model includes weak third order dependence on strain.  It also includes Gaussian noise super-imposed on the nominal stress "data". The second key part of the code creates a Matlab structure called 'data' that contains the 'xdata' (strain) and 'ydata' (fictitious measurement stress) to be compared to the stress model.  A guess of the modulus is then given and assigned within theta. The third key part of the code defines the sum-of-squares (SS) error function between the model stress and the data.  This is used in the MCMC run algorithm such that the SS error is minimized by selecting appropriate values for the elastic properties using the mcmcrun function. Once the mcmcrun is executed for a user defined number of iterations, the results and chains are produced for post processing.  Plots include the posterior densities for the elastic properties, the chains (samples of elastic values simulated) and pair-wise correlation if there is more than one model parameter. Lastly, the code takes the chains and posterior densities and samples over the model to calculate prediction and credible intervals to provide a measure of probability that the model will predict the data.</p><p>Define stress-strain nominal values to make fictitious data for testing the Bayesian code (uncomment and run lines 8-16 and then comment them out for re-running the Bayesian code).  Currently this model contains an elastic modulus of 1 GPa.  The higher order modulus parameter is 1e4 GPa.  This should be kept in mind during the Bayesian parameter calibration of  the linear and nonlinear models.</p><pre class="codeinput"><span class="comment">% ef = 5000e-6;</span>
+<span class="comment">% de = ef/1000;</span>
+<span class="comment">% epsilon = 0:de:ef; %strain</span>
+<span class="comment">% E_mean = 1e9;</span>
+<span class="comment">% sig_E = E_mean*epsilon + 1e4*E_mean*epsilon.^3;</span>
+<span class="comment">% sig_noise = max(sig_E)*randn(1,length(sig_E))/50;</span>
+<span class="comment">% sig_data = sig_E + sig_noise;</span>
+<span class="comment">%</span>
+<span class="comment">% save stress_strain_randn sig_data epsilon</span>
+</pre><p>The following line of code loads a previously generated set of fictitious data.</p><pre class="codeinput">load <span class="string">stress_strain_randn</span> <span class="comment">%this is a set of stress-strain data</span>
+</pre><p>Put stress and strain into a data structure for the Bayesian analysis. Also define an initial guess for the elastic properties.</p><pre class="codeinput">data.ydata = sig_data; <span class="comment">%stress in Pa</span>
+data.xdata = epsilon; <span class="comment">%strain in mm/mm</span>
+data.xdata = data.xdata(:);
+data.ydata = data.ydata(:);
+
+<span class="comment">%define initial guess for Landau parameters</span>
+E = 1.16e9; <span class="comment">%Pa</span>
+<span class="comment">% E2 = E/100; %Pa  ****NONLINEAR******</span>
+
+theta = [E
+<span class="comment">%         E2       ****NONLINEAR*******</span>
+        ];
+
+<span class="comment">%model parameter range</span>
+params = {
+    {<span class="string">'E'</span>, theta(1), 0, inf}
+<span class="comment">%     {'E_2', theta(2),0,inf}  *******NONLINEAR*******</span>
+    };
+</pre><p>Call function that computes the error between the model and data</p><pre class="codeinput">ssfun = @SS_func;
+model.ssfun=ssfun;
+</pre><p>The next lines of code check the initial parameter guesses prior to running Bayesian parameter calibration to see of the values given reasonable results with respect to the data.</p><pre class="codeinput">[sig_model] = elastic_model_Bayesian(theta,data.xdata);
+
+figure(1)
+plot(data.xdata,sig_data/1e6,<span class="string">'bo:'</span>,<span class="string">'MarkerSize'</span>,3,<span class="string">'Linewidth'</span>,2)
+hold <span class="string">on</span>
+plot(data.xdata,sig_model/1e6,<span class="string">'r-'</span>,<span class="string">'Linewidth'</span>,3)
+hold <span class="string">off</span>
+xlabel(<span class="string">'\epsilon (m/m)'</span>)
+ylabel(<span class="string">'\sigma (MPa)'</span>)
+legend(<span class="string">'Data'</span>,<span class="string">'Model'</span>,<span class="string">'Location'</span>,<span class="string">'NorthWest'</span>)
+</pre><img vspace="5" hspace="5" src="main_01.png" alt=""> <p>The Bayesian analysis is calculated here.</p><pre class="codeinput">model.sigma2 = 1e-4;      <span class="comment">%initial guess on variance</span>
+model.S20 = model.sigma2; <span class="comment">%prior for sigma2</span>
+model.N0  = 1;            <span class="comment">%prior accuracy for S20</span>
+options.updatesigma = 1;  <span class="comment">%update variance as part of the inference</span>
+options.method = <span class="string">'dram'</span>;  <span class="comment">%this applies the DRAM algorithm</span>
+model.N  = length(data.xdata); <span class="comment">%number of data points</span>
+
+options.nsimu = 10000; <span class="comment">%number of iterations in the Metropolis method</span>
+[results, chain, s2chain]= mcmcrun(model,data,params,options);
+chainstats(chain,results) <span class="comment">%print chain statistics</span>
+</pre><pre class="codeoutput">Sampling these parameters:
+name   start [min,max] N(mu,s^2)
+E: 1.16e+09 [0,Inf] N(0,Inf)
+MCMC statistics, nsimu = 10000
+
+                 mean         std      MC_err         tau      geweke
+---------------------------------------------------------------------
+         E 1.1525e+09  2.4868e+06       59462      3.8368     0.99977
+---------------------------------------------------------------------
+
+</pre><p>Plot the statistical results.  Note that Figure 4 containing pair correlations will not plot except for the nonlinear case where there is more than one parameter.</p><pre class="codeinput">figure(2)
+mcmcplot(chain,[],results,<span class="string">'denspanel'</span>,2);
+
+figure(3); clf
+mcmcplot(chain,[],results.names,<span class="string">'chainpanel'</span>)
+xlabel(<span class="string">'Iterations'</span>,<span class="string">'Fontsize'</span>,24)
+ylabel(<span class="string">'Parameter value'</span>,<span class="string">'Fontsize'</span>,24)
+
+figure(4)
+mcmcplot(chain,[],results,<span class="string">'pairs'</span>);
+</pre><img vspace="5" hspace="5" src="main_02.png" alt=""> <img vspace="5" hspace="5" src="main_03.png" alt=""> <p>Compute the credible and prediction intervals</p><pre class="codeinput">modelfun1 = @(d,th)elastic_model_Bayesian(th,d); <span class="comment">% NOTE: the order in which d and th appear is important</span>
+
+nsample = 500; <span class="comment">%number of sample iterations of the model used to construct the interval bounds</span>
+               <span class="comment">%the default interval bounds are 95% prediction/credible</span>
+               <span class="comment">%bounds</span>
+out = mcmcpred(results,chain,s2chain,data.xdata,modelfun1,nsample);
+figure(5)
+modelout = mcmcpredplot(out);
+hold <span class="string">on</span>
+plot(data.xdata,data.ydata,<span class="string">'b.--'</span>,<span class="string">'linewidth'</span>,1)
+hold <span class="string">off</span>
+xlabel(<span class="string">'\epsilon (m/m)'</span>,<span class="string">'Fontsize'</span>,24);
+ylabel(<span class="string">'\sigma (Pa)'</span>,<span class="string">'Fontsize'</span>,24);
+legend(<span class="string">'95% Prediction Interval'</span>,<span class="string">'95% Confidence Interval'</span>,<span class="string">'Model Fit'</span>,<span class="string">'Simulated Data'</span>,<span class="string">'Location'</span>,<span class="string">'Best'</span>)
+</pre><img vspace="5" hspace="5" src="main_04.png" alt=""> <p class="footer"><br><a href="http://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2014a</a><br></p></div><!--
+##### SOURCE BEGIN #####
+clear all
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%%
+% The following code analyzes fictitious data for a stress-strain curve of a
+% quasi-linear elastic material.  The linear stress model is
+%
+% $$\sigma = E \epsilon$$
+%
+% where $\sigma$ is the stress, $\epsilon$ is the strain, and $E$ is the
+% modulus.  For the nonlinear case, we consider third order dependence on
+% the strain and introduce a second elastic parameter
+%
+% $$\sigma = E \epsilon + E_2 \epsilon^3$$
+%
+% where $E_2$ is the higher order elastic parameter.  This model requires
+% uncommenting lines of code with *****NONLINEAR****** commented at the end
+% of the line.  Also note that there are two additional lines in the
+% function "elastic_model_Bayesian.m" that must also be uncommented to run
+% the nonlinear case.
+%
+% The first few commented lines of code below can
+% be uncommented and re-ran to create different fictitious stress data given
+% a set of strain data.  Currently the stress model includes weak third order
+% dependence on strain.  It also includes Gaussian noise super-imposed on
+% the nominal stress "data". 
+% The second key part of the code creates a Matlab structure called 'data'
+% that contains the 'xdata' (strain) and 'ydata' (fictitious measurement 
+% stress) to be compared to the stress model.  A guess of the modulus is then 
+% given and assigned within theta. 
+% The third key part of the code defines the sum-of-squares (SS) error function
+% between the model stress and the data.  This is used in the MCMC run
+% algorithm such that the SS error is minimized by selecting appropriate
+% values for the elastic properties using the mcmcrun function.  
+% Once the mcmcrun is executed for a user defined number of iterations, the
+% results and chains are produced for post processing.  Plots include the
+% posterior densities for the elastic properties, the chains (samples of
+% elastic values simulated) and pair-wise correlation if there is more than
+% one model parameter.  
+% Lastly, the code takes the chains and posterior densities and samples over
+% the model to calculate prediction and credible intervals to provide a
+% measure of probability that the model will predict the data.
+%%
+% Define stress-strain nominal values to make fictitious data for testing
+% the Bayesian code (uncomment and run lines 8-16 and then comment them out
+% for re-running the Bayesian code).  Currently this model contains an
+% elastic modulus of 1 GPa.  The higher order modulus parameter is 1e4 GPa.
+%  This should be kept in mind during the Bayesian parameter calibration of
+%  the linear and nonlinear models.
+%%
+
+% ef = 5000e-6;
+% de = ef/1000;
+% epsilon = 0:de:ef; %strain
+% E_mean = 1e9;
+% sig_E = E_mean*epsilon + 1e4*E_mean*epsilon.^3;
+% sig_noise = max(sig_E)*randn(1,length(sig_E))/50;
+% sig_data = sig_E + sig_noise;
+%
+% save stress_strain_randn sig_data epsilon
+%%
+
+%%
+% The following line of code loads a previously generated set of fictitious data.
+%%
+
+load stress_strain_randn %this is a set of stress-strain data 
+
+%%
+% Put stress and strain into a data structure for the Bayesian analysis.
+% Also define an initial guess for the elastic properties.
+%%
+
+data.ydata = sig_data; %stress in Pa
+data.xdata = epsilon; %strain in mm/mm
+data.xdata = data.xdata(:);
+data.ydata = data.ydata(:);
+
+%define initial guess for Landau parameters
+E = 1.16e9; %Pa
+% E2 = E/100; %Pa  ****NONLINEAR******
+
+theta = [E
+%         E2       ****NONLINEAR*******
+        ];
+
+%model parameter range
+params = {
+    {'E', theta(1), 0, inf}
+%     {'E_2', theta(2),0,inf}  *******NONLINEAR*******
+    };
+
+%%
+% Call function that computes the error between the model and data 
+%%
+
+ssfun = @SS_func;
+model.ssfun=ssfun;
+
+%%
+% The next lines of code check the initial parameter guesses prior to running
+% Bayesian parameter calibration to see of the values given reasonable
+% results with respect to the data.
+%%
+
+[sig_model] = elastic_model_Bayesian(theta,data.xdata);
+
+figure(1)
+plot(data.xdata,sig_data/1e6,'bo:','MarkerSize',3,'Linewidth',2)
+hold on
+plot(data.xdata,sig_model/1e6,'r-','Linewidth',3)
+hold off
+xlabel('\epsilon (m/m)')
+ylabel('\sigma (MPa)')
+legend('Data','Model','Location','NorthWest')
+
+%%
+% The Bayesian analysis is calculated here.
+%%
+
+model.sigma2 = 1e-4;      %initial guess on variance
+model.S20 = model.sigma2; %prior for sigma2
+model.N0  = 1;            %prior accuracy for S20
+options.updatesigma = 1;  %update variance as part of the inference
+options.method = 'dram';  %this applies the DRAM algorithm
+model.N  = length(data.xdata); %number of data points
+
+options.nsimu = 10000; %number of iterations in the Metropolis method
+[results, chain, s2chain]= mcmcrun(model,data,params,options);
+chainstats(chain,results) %print chain statistics
+
+%%
+% Plot the statistical results.  Note that Figure 4 containing pair
+% correlations will not plot except for the nonlinear case where there is
+% more than one parameter.
+%%
+
+figure(2)
+mcmcplot(chain,[],results,'denspanel',2);
+
+figure(3); clf
+mcmcplot(chain,[],results.names,'chainpanel')
+xlabel('Iterations','Fontsize',24)
+ylabel('Parameter value','Fontsize',24)
+
+figure(4)
+mcmcplot(chain,[],results,'pairs');
+
+%%
+% Compute the credible and prediction intervals
+%%
+
+modelfun1 = @(d,th)elastic_model_Bayesian(th,d); % NOTE: the order in which d and th appear is important
+
+nsample = 500; %number of sample iterations of the model used to construct the interval bounds
+               %the default interval bounds are 95% prediction/credible
+               %bounds
+out = mcmcpred(results,chain,s2chain,data.xdata,modelfun1,nsample);
+figure(5)
+modelout = mcmcpredplot(out);
+hold on
+plot(data.xdata,data.ydata,'b.REPLACE_WITH_DASH_DASH','linewidth',1)
+hold off
+xlabel('\epsilon (m/m)','Fontsize',24);
+ylabel('\sigma (Pa)','Fontsize',24);
+legend('95% Prediction Interval','95% Confidence Interval','Model Fit','Simulated Data','Location','Best')
+
+
+
+
+##### SOURCE END #####
+--></body></html>
