@@ -114,6 +114,7 @@ hold off
 xlabel('\epsilon (m/m)')
 ylabel('\sigma (MPa)')
 legend('Data','Model','Location','NorthWest')
+saveas(gcf, "Data.jpg")
 
 %%
 % The Bayesian analysis is calculated here.
@@ -138,15 +139,17 @@ chainstats(chain,results) %print chain statistics
 
 figure(2)
 mcmcplot(chain,[],results,'denspanel',2);
+saveas(gcf, "Densities.jpg")
 
 figure(3); clf
 mcmcplot(chain,[],results.names,'chainpanel')
 xlabel('Iterations','Fontsize',24)
 ylabel('Parameter value','Fontsize',24)
+saveas(gcf, "Chains.jpg")
 
-% figure(4)
-% mcmcplot(chain,[],results,'pairs');
-
+figure(4)
+mcmcplot(chain,[],results,'pairs');
+saveas(gcf, "Pairs.jpg")
 %%
 % Compute the credible and prediction intervals
 %%
@@ -165,6 +168,7 @@ hold off
 xlabel('\epsilon (m/m)','Fontsize',24);
 ylabel('\sigma (Pa)','Fontsize',24);
 legend('95% Prediction Interval','95% Credible Interval','Model Fit','Simulated Data','Location','Best')
+saveas(gcf, "Confidence.jpg")
 
 
 

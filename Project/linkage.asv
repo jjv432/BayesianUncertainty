@@ -1,0 +1,55 @@
+classdef linkage
+    %UNTITLED2 Summary of this class goes here
+    %   Detailed explanation goes here
+
+    properties
+        handedness = 'r'
+        L
+        l
+        x_b = 0;
+        y_b = 0;
+        basePosition
+        cornerPosition
+        endPosition
+    end
+
+    methods
+        function obj = linkage(handedness, L, l)
+            %UNTITLED2 Construct an instance of this class
+            %   Detailed explanation goes here
+            obj.handedness = handedness;
+            obj.L = L;
+            obj.l = l;
+        end
+
+        function obj = defineCoords(obj,theta)
+            %METHOD1 Summary of this method goes here
+            % Define where the beginning and end of links are
+            % o (origin), b (base), c (corner), e (end)
+
+            r_ob = [obj.x_b, obj.y_b]; % from o to b
+            r_bc = obj.l * [cos(theta), sin(theta)]; % from b to c
+            r_ce = obj.L * [-sin(theta), cos(theta)]; % from c to e
+            
+            if obj.handedness == 'l'
+                r_ce = [-1, 1].* r_ce;
+            end
+
+            obj.basePosition = r_ob;
+            obj.cornerPosition = r_ob + r_bc;
+            obj.endPosition = obj.cornerPosition + r_ce;
+
+        end
+
+        function plotLinkage(obj, theta)
+            % Update the coordinates
+            obj = obj.defineCoords(theta);
+            
+            gca;
+            hold on
+            plot([obj.basePosition(1), obj.cornerPosition(1)], [obj.basePosition(2), obj.cornerPosition(2)]);
+            plot([obj.cornerPosition(1), obj.endPosition(1)], [obj.cornerPosition(2), obj.endPosition(2)]);
+            hold off
+        end
+    end
+end

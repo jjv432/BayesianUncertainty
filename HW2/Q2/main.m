@@ -23,18 +23,27 @@ k = 313^2; %spring constant
 C = 27.916; %damping term
 m = 1;
 
+% theta = [y0
+%          k
+%          C
+%          m
+%         ];
 theta = [y0
          k
          C
-         m
         ];
 
 %model parameter range
+% params = {
+%     {'y_0', theta(1), 0, inf}
+%     {'k', theta(2),0,300^2*100}
+%     {'C', theta(3),0,inf}
+%     {'m', theta(4),0,100}
+%     };
 params = {
     {'y_0', theta(1), 0, inf}
     {'k', theta(2),0,300^2*100}
     {'C', theta(3),0,inf}
-    {'m', theta(4),0,100}
     };
 
 %%
@@ -61,7 +70,7 @@ hold off
 xlabel('t (s)')
 ylabel('y (m)')
 legend('Data','Model','Location','NorthWest')
-
+saveas(gcf, "ModelAndData_reduced.jpeg");
 
 % figure(10)
 % plot(data.xdata,Chi,'bo:','MarkerSize',3,'Linewidth',2)
@@ -90,14 +99,17 @@ chainstats(chain,results) %print chain statistics
 
 figure(2)
 mcmcplot(chain(1000:end,:),[],results,'denspanel',2);
+saveas(gcf, "Density_reduced.jpeg");
 
 figure(3); clf
 mcmcplot(chain(1000:end,:),[],results.names,'chainpanel')
 xlabel('Iterations','Fontsize',24)
 ylabel('Parameter value','Fontsize',24)
+saveas(gcf, "Chain_reduced.jpeg");
 
 figure(4)
 mcmcplot(chain,[],results,'pairs');
+saveas(gcf, "Pairs_reduced.jpeg");
 
 %%
 % Compute the credible and prediction intervals
@@ -117,6 +129,7 @@ hold off
 xlabel('t (s)','Fontsize',24);
 ylabel('\delta (mm)','Fontsize',24);
 legend('95% Prediction Interval','95% Credible Interval','Model Fit','Simulated Data','Location','Best')
+saveas(gcf, "Error_reduced.jpeg");
 
 % %Estimate distribution of C using normal distribution
 % sig02 = mean(s2chain)/(Chi'*Chi);

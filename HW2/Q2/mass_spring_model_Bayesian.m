@@ -3,9 +3,10 @@ function [y_model] = mass_spring_model_Bayesian(tmin,xdata);
 y0 = tmin(1);
 k = tmin(2);
 C = tmin(3);
-m = tmin(4);
+% m = tmin(4);
 
-wn = (k/m)^(0.5);
+% wn = (k/m)^(0.5);
+wn = (k)^(0.5);
 t = xdata;
 
 %y_model = y0*cos(wn*t);
