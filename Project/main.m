@@ -1,9 +1,11 @@
 clc; close all; clearvars
+%{
+Need to add the extra bits at the end of each linkage
+%}
 L = 5;
 l = 1;
-link1 = linkage('r', L, l);
-link2 = linkage('l', L, l);
-link1 = link1.defineCoords(pi/2);
+link1 = linkage('r', L, l, 'r');
+link2 = linkage('l', L, l, 'k');
 
 %% Plotting
 % figure()
@@ -13,22 +15,28 @@ link1 = link1.defineCoords(pi/2);
 % link.plotLinkage(pi/2)
 
 %% Animating
+xmin = -L-1;
+xmax = 1;
+ymin = -l-1;
+ymax = L+1;
+
 figure()
+hold on
+fill([xmin xmin xmax  xmax], [-1 0 0 -1], 'b', 'FaceAlpha', .5);
 axis equal
 axis padded
-% xlim([-L-1, L+1])
-% ylim([-L-1, L+1])
-thetas = linspace(0, pi/2, 100);
+axis([xmin, xmax, ymin, ymax]);
+
+offset = pi/20;
+thetas = linspace(pi/2 - offset, pi/2 + offset, 250);
 
 for i = 1:numel(thetas)
     link1 = link1.plotLinkage(thetas(i));
     link2.basePosition = link1.endPosition;
-    link2 = link2.plotLinkage(thetas(i));
-    pause(.1);
-    delete(link1.fig1)
-    delete(link1.fig2)
-    delete(link2.fig1)
-    delete(link2.fig2)
+    link2 = link2.plotLinkage(pi-thetas(i));
+    pause(.001);
+    delete(link1.figs)
+    delete(link2.figs)
 end
 
 
