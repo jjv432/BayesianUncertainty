@@ -6,11 +6,11 @@ classdef linkage
         handedness = 'r'
         L
         l
-        x_b = 0;
-        y_b = 0;
-        basePosition
+        basePosition = [0, 0];
         cornerPosition
         endPosition
+        fig1
+        fig2
     end
 
     methods
@@ -27,12 +27,12 @@ classdef linkage
             % Define where the beginning and end of links are
             % o (origin), b (base), c (corner), e (end)
 
-            r_ob = [obj.x_b, obj.y_b]; % from o to b
+            r_ob = obj.basePosition; % from o to b
             r_bc = obj.l * [cos(theta), sin(theta)]; % from b to c
             r_ce = obj.L * [-sin(theta), cos(theta)]; % from c to e
             
             if obj.handedness == 'l'
-                r_ce = [-1, 1].* r_ce;
+                r_ce = r_ce * [-1, 0; 0, -1];
             end
 
             obj.basePosition = r_ob;
@@ -41,23 +41,24 @@ classdef linkage
 
         end
 
-        function plotLinkage(obj, theta)
+        function obj = plotLinkage(obj, theta)
             % Update the coordinates
             obj = obj.defineCoords(theta);
             
             gca;
             hold on
-            plot([obj.basePosition(1), obj.cornerPosition(1)], [obj.basePosition(2), obj.cornerPosition(2)]);
-            plot([obj.cornerPosition(1), obj.endPosition(1)], [obj.cornerPosition(2), obj.endPosition(2)]);
-            hold off
+            obj.fig1 = plot([obj.basePosition(1), obj.cornerPosition(1)], [obj.basePosition(2), obj.cornerPosition(2)]);
+            obj.fig2 = plot([obj.cornerPosition(1), obj.endPosition(1)], [obj.cornerPosition(2), obj.endPosition(2)]);
+            
         end
 
         function animateLinkage(obj, thetas)
 
             for i = 1:numel(thetas)
-                cla;
-                obj.plotLinkage(thetas(i));
+                obj = obj.plotLinkage(thetas(i));
                 pause(.1);
+                delete(obj.fig1)
+                delete(obj.fig2)
             end
         end
     end
