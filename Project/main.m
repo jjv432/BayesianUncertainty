@@ -1,12 +1,8 @@
 clc; close all; clearvars
-%{
-Need to add the extra bits at the end of each linkage
-%}
+%% 
 L = 5;
 l = 1;
-% link1 = linkage('r', L, l, 'r');
-% link2 = linkage('l', L, l, 'k');
-% link3 = linkage('r', L, l, 'c');
+
 links(1) = linkage('r', L, l, 'r');
 links(2) = linkage('l', L, l, 'k');
 links(3) = linkage('r', L, l, 'c');
@@ -27,11 +23,16 @@ axis([xmin, xmax, ymin, ymax]);
 offset = pi/20;
 thetas = linspace(pi/2 - offset, pi/2 + offset, 250);
 linkageOffset = 0;
+
+% Animate every theta
 for i = 1:numel(thetas)
     links(1) = links(1).plotLinkage(thetas(i));
+
+    % animate each link
     for j = 2:numel(links)
         links(j).basePosition = links(j-1).endPosition;
-        if mod(j,2) == 0
+        % lhs links need to have mirrored thetas
+        if links(j).handedness == 'l'
             links(j) = links(j).plotLinkage(pi-thetas(i));
         else
             links(j) = links(j).plotLinkage(thetas(i));
@@ -39,6 +40,8 @@ for i = 1:numel(thetas)
     end
 
     pause(.001);
+    
+    % Delete all the plots to make it smooth
     for k = 1:numel(links)
         delete(links(k).figs);
     end

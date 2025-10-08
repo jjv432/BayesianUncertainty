@@ -10,9 +10,6 @@ classdef linkage
         corner1Position
         corner2Position
         endPosition
-        fig1
-        fig2
-        fig3
         figs
         color
     end
