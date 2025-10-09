@@ -1,0 +1,58 @@
+clear all
+
+t = 0:1e-4:0.2;
+z0 = 1.5;
+k = 1e5;
+C = 30;
+m = 1;
+
+wn = (k/m)^(0.5);
+
+y_model = z0*exp(-C*t/2).*cos((wn^2-C^2/4).^0.5*t);
+dy = max(y_model)/5e1;
+
+ny = length(y_model);
+epsil = randn(1,ny);
+y_obs = y_model + dy*epsil;
+
+figure(1)
+plot(t,y_model,'r-','LineWidth',2)
+hold on
+plot(t,y_obs,'b.')
+hold off
+xlabel('t (sec)')
+ylabel('y(t)')
+
+% %now create a mixed mode model with random initial conditions
+% dz = z0/10;
+% nz = 20;%length(y_obs);
+% z1 = dz*randn(1,nz);
+% epsil_ij = dy*randn(ny,nz);
+
+% %now create a mixed mode model with random stiffness values
+% dw = k/5e4;
+% nw = 20;%length(y_obs);
+% wn1 = dw*randn(1,nw);
+% epsil_ij = dy*randn(ny,nw);
+% wn_mixed = (wn + wn1);
+
+%now create a mixed mode model with random damping values
+dc = C/5;
+nc = 20;%length(y_obs);
+c1 = dc*randn(1,nc);
+epsil_ij = dy*randn(ny,nc);
+c_mixed = (C + c1);
+
+for i=1:ny
+    for j=1:nc
+        % y_mixed(i,j) = (z0 + z1(j))*exp(-C*t(i)/2).*cos((wn^2-C^2/4).^0.5*t(i)) + epsil_ij(i,j);
+        % y_mixed(i,j) = (z0)*exp(-C*t(i)/2).*cos((wn_mixed(j).^2-C^2/4).^0.5*t(i)) + epsil_ij(i,j);
+        y_mixed(i,j) = (z0)*exp(-c_mixed(j)*t(i)/2).*cos((wn_mixed(j).^2-c_mixed(j)^2/4).^0.5*t(i)) + epsil_ij(i,j);
+    end
+end
+
+figure(2)
+plot(t,y_mixed(:,1:20),'.')
+xlabel('t')
+ylabel('y(t)')
+
