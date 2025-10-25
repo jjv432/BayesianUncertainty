@@ -1,4 +1,42 @@
 clc; close all; clearvars
+
+%% Dynamics
+%{
+For this model, because every angle reacts the same (magnitude), the forces
+will be:
+ Fk = K*THETA, where K = sum(k)
+ Fd = D*THETA_DOT, where D = sum(d)
+THETA = theta_1, ..., theta_n
+THETA_DOT = theta_dot_1, ..., theta_dot_2
+%}
+N = 1;
+k = 20;
+d = 20;
+I = 100;
+
+A = [0, 1; -N*k/I, -N*d/I];
+B = [0; 1/I];
+C = [1, 0];
+D = [0];
+sys = ss(A, B, C, D);
+
+zpsys = zpk(sys);
+% pzplot(zpsys)
+
+figure()
+rlocus(zpsys);
+
+time = linspace(0, 30, 1000);
+time = time(:);
+u = [zeros(numel(time),1)];
+% u = cos(time);
+
+IC = [pi/16, 0];
+y = lsim(sys, u, time, IC);
+figure()
+plot(time, y);
+
+
 %% 
 L = 5;
 l = 1;
