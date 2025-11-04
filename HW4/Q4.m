@@ -112,6 +112,7 @@ for i = 1:3
 
 end
 
+saveas(gcf, "Q4plots.jpg");
 
 
 %% Fns

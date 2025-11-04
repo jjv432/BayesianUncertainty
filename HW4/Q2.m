@@ -1,12 +1,11 @@
 clc; clear all; close all
 
-%% INCOMPLETE !!!!!!!!!!!!!!!!!!!!!
 % pg 186
 
 % theta = [r; K; z0]
 
 %% Pt 1
-thresh = 1e-4; % nu
+thresh = 1e-6; % nu
 
 %% Pt 2
 % i is the numel of time
@@ -58,25 +57,52 @@ end
 %% Part 3
 
 F = transpose(S) * S;
-[F_eig, F_eig_vect] = eig(F);
-F_eig = sort(F_eig, 'descend');
-L = 0;
+[F_eig_vect, F_eig] = eig(F);
+
+[F_eig, I] = sort(diag(F_eig), 'descend');
+
+F_eig_sorted(:, 1) = F_eig_vect(:, I(1));
+F_eig_sorted(:, 2) = F_eig_vect(:, I(2));
+F_eig_sorted(:, 3) = F_eig_vect(:, I(3));
+
 
 %% Part 4
 lam_1 = F_eig(1);
 lam_p = F_eig(end);
 
 m = [];
+L = [];
 
 if (lam_p/lam_1 > thresh)
-    L = {};
+
     disp("All vars are identifiable");
 else
     for i = 1:numel(F_eig) - 1
+        % find m
         if ((F_eig(i)/lam_1) > thresh) && ((F_eig(i + 1)/lam_1) <=thresh)
             m = i;
         end
-
+        
+        % eigenvector corresponding with p
+        vp = F_eig_sorted(:, end);
+        [~,j] = max(vp);
+        L = [L;j];
     end
+
+    % This is part b. The algorithm is unclear on what needs to be
+    % repeated, but this is my interpretation
+
+    % now, repeat for other indices
+
+    for t = 1:(m+1)
+    % eigenvector corresponding with cur index
+        vp = F_eig_sorted(:, t);
+        [~,j] = max(vp);
+        L = [L;j];
+    end
+
+    L = unique(sort(L));
+
+    disp("The following indices are unidentifiable: " + string(L))
 
 end
