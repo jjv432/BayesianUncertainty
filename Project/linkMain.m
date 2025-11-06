@@ -1,4 +1,5 @@
 clc; clearvars; close all;
+addpath("./src")
 l = link();
 
 F_loads = linspace(1, 1e5, 10);
