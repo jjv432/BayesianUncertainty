@@ -1,22 +1,137 @@
 classdef elbow
-    %UNTITLED3 Summary of this class goes here
+    %UNTITLED2 Summary of this class goes here
     %   Detailed explanation goes here
 
     properties
-        Property1
+        t = 2;
+        w = 10;
+        r = 2;
+        E = 1e5;
+        I
+        l_od_0
+        l_id_0
+
     end
 
     methods
-        function obj = elbow(inputArg1,inputArg2)
-            %UNTITLED3 Construct an instance of this class
-            %   Detailed explanation goes here
-            obj.Property1 = inputArg1 + inputArg2;
+        function obj = elbow(varargin)
+            % User inputs
+            p = inputParser();
+            addParameter(p, 't', obj.t);
+            addParameter(p, 'w', obj.w);
+            addParameter(p, 'r', obj.r);
+            addParameter(p, 'E', obj.E);
+
+            parse(p, varargin{:});
+
+            obj.t = p.Results.t;
+            obj.w = p.Results.w;
+            obj.r = p.Results.r;
+            obj.E = p.Results.E;
+
+            % Calcs based on User Input
+            obj.I = (1/12) * obj.w * obj.t;
+            obj.l_od_0 = (pi/2) * (obj.r + obj.t);
+            obj.l_id_0 = (pi/2) * obj.r;
+
         end
 
-        function outputArg = method1(obj,inputArg)
-            %METHOD1 Summary of this method goes here
-            %   Detailed explanation goes here
-            outputArg = obj.Property1 + inputArg;
+        function [x_coords, y_coords, thetas] = predictSingleAngularChange(obj,F_load)
+            M = F_load * (obj.r + obj.t/2);
+            stress = M * (obj.t/2) / obj.I;
+            strain = stress / obj.E;
+
+            theta_od = (obj.l_od_0 + strain) / (obj.r + obj.t);
+            theta_id = (obj.l_id_0 - strain) / (obj.r);
+
+            theta_1 = .5 * (theta_id + pi/2);
+            theta_2 = .5 * (theta_od + pi/2);
+
+            x_top = (obj.r + obj.t) * cos(theta_2);
+            y_top = (obj.r + obj.t) * sin(theta_2);
+
+            x_in = obj.r * cos(theta_1);
+            y_in = obj.r * sin(theta_1);
+
+            % theta_3 = atan2((y_top - y_in), (x_top - x_in));
+            x_coords = [x_top, x_in];
+            y_coords = [y_top, y_in];
+            thetas = [theta_2, theta_1];
+        end
+
+        function plotOriginalShape(obj)
+            gca;
+            r_o = obj.r + obj.t;
+            r_i = obj.r;
+            thetas = linspace(-pi/2, pi/2, 100);
+
+            xvals_in = r_i * cos(thetas);
+            yvals_in = r_i * sin(thetas);
+
+            xvals_out = r_o * cos(thetas);
+            yvals_out = r_o * sin(thetas);
+
+            x_vals = [xvals_in, flip(xvals_out)];
+            y_vals = [yvals_in, flip(yvals_out)];
+
+            hold on
+            fill(x_vals, y_vals, 'b');
+            axis equal
+        end
+
+        function handles = plotSingleAngularChange(obj, F_load)
+
+            [x_coords, y_coords] = obj.predictSingleAngularChange(F_load);
+            gca;
+            h1 = plot(x_coords, y_coords, 'k', 'LineWidth', 2);
+            h2 = plot(x_coords, -y_coords, 'k', 'LineWidth', 2);
+
+            handles = [h1, h2];
+
+        end
+
+        function plotMultipleAngularChanges(obj, F_loads)
+            obj.plotOriginalShape();
+
+            gca;
+            for i = 1:numel(F_loads)
+                h = obj.plotSingleAngularChange(F_loads(i));
+                drawnow;
+                pause(.2);
+                delete(h);
+            end
+
+        end
+
+        function animateLinkMultipleLoads(obj, F_loads)
+            
+            obj.plotOriginalShape()
+            
+
+            for i = 1:numel(F_loads)
+                [~,~, thetas] = obj.predictSingleAngularChange(F_loads(i));
+
+                thetas_out = linspace(-thetas(1), thetas(1), 100);
+                thetas_in = linspace(-thetas(2), thetas(2), 100);
+
+                x_out = (obj.r + obj.t) * cos(thetas_out);
+                x_in = (obj.r) * cos(thetas_in);
+
+                y_out = (obj.r + obj.t) * sin(thetas_out);
+                y_in = (obj.r) * sin(thetas_in);
+
+                x_vals = [x_in, flip(x_out)];
+                y_vals = [y_in, flip(y_out)];
+
+                hold on
+                gca;
+                h = fill(x_vals, y_vals, 'r', 'FaceAlpha', .5);
+                axis([-5 5 -5 5])
+                drawnow;
+                delete(h);
+
+
+            end
         end
     end
 end

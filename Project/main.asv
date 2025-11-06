@@ -4,7 +4,7 @@ addpath("./src");
 
 c = connector(4, 1, 'r');
 
-c.plotConnector(-1,-1, pi/4);
+c.plotConnector(0,0, pi/4);
 
 e = elbow;
 
