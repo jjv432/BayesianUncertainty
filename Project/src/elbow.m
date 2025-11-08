@@ -1,4 +1,4 @@
-classdef elbow
+classdef elbow < handle
     %UNTITLED2 Summary of this class goes here
     %   Detailed explanation goes here
 
@@ -7,9 +7,12 @@ classdef elbow
         w = 10;
         r = 2;
         E = 1e5;
+        side = 'l'
         I
         l_od_0
         l_id_0
+        x_offset = 0
+        y_offset = 0
 
     end
 
@@ -21,6 +24,7 @@ classdef elbow
             addParameter(p, 'w', obj.w);
             addParameter(p, 'r', obj.r);
             addParameter(p, 'E', obj.E);
+            addParameter(p, 'side', obj.side);
 
             parse(p, varargin{:});
 
@@ -28,6 +32,7 @@ classdef elbow
             obj.w = p.Results.w;
             obj.r = p.Results.r;
             obj.E = p.Results.E;
+            obj.side = p.Results.side;
 
             % Calcs based on User Input
             obj.I = (1/12) * obj.w * obj.t;
@@ -59,8 +64,8 @@ classdef elbow
             thetas = [theta_2, theta_1];
         end
 
-        function plotOriginalShape(obj)
-            gca;
+        function obj = plotOriginalShape(obj, bool)
+            
             r_o = obj.r + obj.t;
             r_i = obj.r;
             thetas = linspace(-pi/2, pi/2, 100);
@@ -71,12 +76,26 @@ classdef elbow
             xvals_out = r_o * cos(thetas);
             yvals_out = r_o * sin(thetas);
 
+            if obj.side == 'r'
+                xvals_in = -xvals_in;
+                xvals_out = -xvals_out;
+            end
+
+            xvals_in = xvals_in + obj.x_offset;
+            xvals_out = xvals_out + obj.x_offset;
+
+            yvals_in = yvals_in + obj.y_offset;
+            yvals_out = yvals_out + obj.y_offset;
+
             x_vals = [xvals_in, flip(xvals_out)];
             y_vals = [yvals_in, flip(yvals_out)];
 
-            hold on
-            fill(x_vals, y_vals, 'b');
-            axis equal
+            if bool
+                gca;
+
+                fill(x_vals, y_vals, 'b');
+
+            end
         end
 
         function handles = plotSingleAngularChange(obj, F_load)

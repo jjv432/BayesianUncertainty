@@ -7,6 +7,9 @@ classdef connector < handle
         thickness = 1;
         coords = [];
         side = 'l'
+        x = 0
+        y = 0
+        theta = 0
     end
 
     methods
@@ -32,19 +35,19 @@ classdef connector < handle
             
         end
 
-        function obj = transformCoords(obj, x, y, theta)
+        function obj = transformCoords(obj)
 
             if isempty(obj.coords)
                 obj.makeCoords();
             end            
 
-            obj.coords = [cos(theta), -sin(theta); sin(theta), cos(theta)] *  obj.coords;    
-            obj.coords = obj.coords + [x;y]; % translation
+            obj.coords = [cos(obj.theta), -sin(obj.theta); sin(obj.theta), cos(obj.theta)] *  obj.coords;    
+            obj.coords = obj.coords + [obj.x;obj.y]; % translation
 
         end
 
-        function plotConnector(obj, x, y, theta)
-            obj.transformCoords(x, y, theta);
+        function plotConnector(obj)
+            obj.transformCoords();
             gca;
             fill(obj.coords(1, :), obj.coords(2, :), 'r');
             axis equal
