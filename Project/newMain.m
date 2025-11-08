@@ -3,13 +3,15 @@ clc; clearvars; close all;
 % All of these units are metric
 L = .01;
 t = .001;
-w = .01; 
-r = .004;
-m = .05;
+w = 100; 
+r = .4;
+m = .0005;
 
 s = newSpring(L, t, w, r);
-s.predictKD;
 
+s.predictKD();
+
+s.ks;
 
 A = [0, 1; -s.ks/m, -s.kd/m];
 B = [0; 1/m];
@@ -38,23 +40,19 @@ figure;
 plot(t_out, y, 'LineWidth', 1.2)
 
 figure;
-
 for i = 1:numel(y)
     cla;
-    s.inverseKinematics(y(i))
-    s.fillCoords
+    s.inverseKinematics(y(i));
+    s.fillCoords;
     drawnow;
 
 end
 
 
-
-
-
 %% OLD
 
-% Constantly increasing F
-
+% % Constantly increasing F
+% 
 % forces = linspace(0, 2, 10);
 % gca;
 % for i = 1:numel(forces)

@@ -7,7 +7,7 @@ classdef newSpring < handle
         t
         w
         r
-        E = 1e5;
+        E = 1e4;
         th3 = pi/2 * 1.2
         origin = [0;0];
         coords
@@ -119,7 +119,7 @@ classdef newSpring < handle
 
         end
 
-        function th3Response(obj, F_load)
+        function th3 = th3Response(obj, F_load)
             F_load = F_load / obj.numElbows;
 
             I = (1/12) * obj.w * obj.t;
@@ -145,15 +145,18 @@ classdef newSpring < handle
             x_in = obj.r * cos(theta_1);
             y_in = obj.r * sin(theta_1);
 
-            obj.th3 = atan2((y_top - y_in), (x_top - x_in));
+            th3 = atan2((y_top - y_in), (x_top - x_in));
+            
 
         end
 
         function predictKD(obj)
-            testForce = 1;
-            obj.th3Response(1)
-            obj.ks = testForce / obj.th3;
+            testForce = 10;
+            th3_ = wrapTo2Pi(obj.th3Response(testForce) - pi/2);
+            obj.ks = testForce / th3_;
+            obj.ks
             obj.kd = obj.ks; % FIX THIS
+            obj.th3 = pi/2;
         end
 
         function th3_ = inverseKinematics(obj, cur_y)
@@ -164,25 +167,10 @@ classdef newSpring < handle
 
             natural_length = (2 * (obj.r + obj.t)) * obj.numElbows;
 
-            dy = (cur_y - natural_length) /2 ;
 
-            % We start out knowing where point H is because that's the
-            % given height. Also the x position doesn't change
-
-   
-            syms th3_
-            assume(th3_, 'real');
-
-            eqn = cur_y - cs.B(2) - 2*obj.r - obj.t == (2*obj.r + obj.t)*(th3_) + obj.t*cos(th3_); % small angle approx
-            % 
-            % r_BC = [obj.r*sin(th3_) + obj.r];
-            % r_CD = [obj.t*sin(th3_)];
-            % r_DE = [obj.L*cos(th3_)];
-            % 
-            % eqn = dy == cs.B(2) + r_BC + r_CD;
-
-            % th3_ = (cur_y - cs.B(2) - 2*obj.r - obj.t - obj.L ) / (2*obj.r + obj.t);
-            th3_ = (dy - 2*obj.r - obj.t - obj.L ) / (2*obj.r + obj.t);           
+            th3_ = pi/2-(cur_y + natural_length - cs.B(2) - 2*obj.r - obj.t - obj.L ) / (2*obj.r + obj.t);       
+            
+            obj.th3 = th3_;
 
         end
     end
