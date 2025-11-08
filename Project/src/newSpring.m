@@ -54,61 +54,27 @@ classdef newSpring < handle
         end
 
         function fillCoords(obj)
-
             obj.makeCoords();
-            cs = obj.coords;
-
 
             gca;
             hold on;
 
-
-            % % For A-B-G1-G2
+            % For A-B-G1-G2
             obj.fillConnector('A', 'B', "G2", "G1");
 
             % for the curve
-            theta_vals = linspace(-pi/2,obj.th3, 100);
-            xvals_out = (obj.r + obj.t) * cos(theta_vals) + cs.B(1);
-            xvals_in = obj.r * cos(theta_vals) + cs.B(1);
-
-            yvals_out = (obj.r + obj.t) * sin(theta_vals) + obj.r + obj.t;
-            yvals_in = obj.r * sin(theta_vals)  + cs.B(2) + obj.r;
-
-            xvals_curve = [xvals_in, flip(xvals_out)];
-            yvals_curve = [yvals_in, flip(yvals_out)];
-
-            fill(xvals_curve, yvals_curve, 'g');
-            axis equal
+            obj.fillElbow('B', "G2", 'r');
 
             % For D-E-F-C
             obj.fillConnector('D', 'E', 'F', 'C');
 
             % for the next curve
-            theta_vals = linspace(obj.th3+pi , pi/2, 100);
-
-            xvals_out = (obj.r + obj.t) * cos(theta_vals);
-            xvals_out = xvals_out - xvals_out(1) + cs.F(1);
-
-            xvals_in = obj.r * cos(theta_vals);
-            xvals_in = xvals_in - xvals_in(1) + cs.E(1);
-
-            yvals_out = (obj.r + obj.t) * sin(theta_vals);
-            yvals_out = yvals_out - yvals_out(1) + cs.F(2);
-
-            yvals_in = obj.r * sin(theta_vals);          
-            yvals_in = yvals_in - yvals_in(1) + cs.E(2);
-
-            xvals_curve = [xvals_in, flip(xvals_out)];
-            yvals_curve = [yvals_in, flip(yvals_out)];
-
-            fill(xvals_curve, yvals_curve, 'g');
-            axis equal
+            obj.fillElbow('E', 'F', 'l');
 
             % For H-I-J-K
-            xvals = [cs.H(1), cs.I(1), cs.J(1), cs.K(1)];
-            yvals = [cs.H(2), cs.I(2), cs.J(2), cs.K(2)];
-            fill(xvals, yvals, 'r');
+            obj.fillConnector('H', 'I', 'J', 'K');
 
+            axis equal
         end
 
         function fillConnector(obj, aa, bb, cc, dd)
@@ -117,6 +83,35 @@ classdef newSpring < handle
             xvals = [cs.(aa)(1), cs.(bb)(1), cs.(cc)(1), cs.(dd)(1)];
             yvals = [cs.(aa)(2), cs.(bb)(2), cs.(cc)(2), cs.(dd)(2)];
             fill(xvals, yvals, 'r');
+
+        end
+
+        function fillElbow(obj, topCon, botCon, side)
+            cs = obj.coords;
+
+            if side == 'r'
+                theta_vals = linspace(-pi/2,obj.th3, 100);
+            elseif side == 'l'
+                theta_vals = linspace(obj.th3+pi , pi/2, 100);
+            end
+
+            xvals_out = (obj.r + obj.t) * cos(theta_vals);
+            xvals_out = xvals_out - xvals_out(1) + cs.(botCon)(1);
+
+            xvals_in = obj.r * cos(theta_vals);
+            xvals_in = xvals_in - xvals_in(1) + cs.(topCon)(1);
+
+            yvals_out = (obj.r + obj.t) * sin(theta_vals);
+            yvals_out = yvals_out - yvals_out(1) + cs.(botCon)(2);
+
+            yvals_in = obj.r * sin(theta_vals);
+            yvals_in = yvals_in - yvals_in(1) + cs.(topCon)(2);
+
+            xvals_curve = [xvals_in, flip(xvals_out)];
+            yvals_curve = [yvals_in, flip(yvals_out)];
+
+            fill(xvals_curve, yvals_curve, 'g');
+
 
         end
     end
