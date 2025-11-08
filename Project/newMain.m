@@ -1,11 +1,14 @@
 clc; clearvars; close all;
+%{
+FIX THE PART WHERE K IS CALC'D => th3Response
+%}
 
 % All of these units are metric
 L = .01;
 t = .001;
-w = 100; 
-r = .4;
-m = .0005;
+w = .01; 
+r = .004;
+m = .005;
 
 s = newSpring(L, t, w, r);
 
