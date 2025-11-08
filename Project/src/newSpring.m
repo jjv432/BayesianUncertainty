@@ -26,6 +26,7 @@ classdef newSpring < handle
             % all coords [x; y]
             %METHOD1 Summary of this method goes here
             %   Detailed explanation goes here
+
             r_oA = [0; obj.t];
             r_AB = [obj.L; 0];
             r_BC = [obj.r*cos(obj.th3); obj.r*sin(obj.th3) + obj.r];
@@ -37,6 +38,9 @@ classdef newSpring < handle
             r_IJ = [obj.L; 0];
             r_JK = [0; obj.t];
 
+
+            obj.coords.G1 = [0; 0];
+            obj.coords.G2 = [obj.L; 0];
             obj.coords.A = obj.origin + r_oA;
             obj.coords.B = obj.coords.A + r_AB;
             obj.coords.C = obj.coords.B + r_BC;
@@ -54,12 +58,13 @@ classdef newSpring < handle
             obj.makeCoords();
             cs = obj.coords;
 
+
             gca;
             hold on;
-            % For A-B-G1-G2
-            xvals = [cs.A(1), cs.B(1), cs.B(1), cs.A(1)];
-            yvals = [cs.A(2), cs.B(2), obj.origin(2), obj.origin(2)];
-            fill(xvals, yvals, 'r');
+
+
+            % % For A-B-G1-G2
+            obj.fillConnector('A', 'B', "G2", "G1");
 
             % for the curve
             theta_vals = linspace(-pi/2,obj.th3, 100);
@@ -76,9 +81,7 @@ classdef newSpring < handle
             axis equal
 
             % For D-E-F-C
-            xvals = [cs.D(1), cs.E(1), cs.F(1), cs.C(1)];
-            yvals = [cs.D(2), cs.E(2), cs.F(2), cs.C(2)];
-            fill(xvals, yvals, 'r');
+            obj.fillConnector('D', 'E', 'F', 'C');
 
             % for the next curve
             theta_vals = linspace(obj.th3+pi , pi/2, 100);
@@ -104,6 +107,15 @@ classdef newSpring < handle
             % For H-I-J-K
             xvals = [cs.H(1), cs.I(1), cs.J(1), cs.K(1)];
             yvals = [cs.H(2), cs.I(2), cs.J(2), cs.K(2)];
+            fill(xvals, yvals, 'r');
+
+        end
+
+        function fillConnector(obj, aa, bb, cc, dd)
+            cs = obj.coords;
+
+            xvals = [cs.(aa)(1), cs.(bb)(1), cs.(cc)(1), cs.(dd)(1)];
+            yvals = [cs.(aa)(2), cs.(bb)(2), cs.(cc)(2), cs.(dd)(2)];
             fill(xvals, yvals, 'r');
 
         end
