@@ -6,5 +6,14 @@ w = 1;
 r = 1;
 
 s = newSpring(L, t, w, r);
-s.makeCoords;
-s.fillCoords
+
+thetas = linspace(pi/2, pi/2 * 1.2, 20);
+gca;
+for i = 1:numel(thetas)
+    cla;
+    s.th3 = thetas(i);
+    s.fillCoords
+    drawnow;
+    
+end
+
