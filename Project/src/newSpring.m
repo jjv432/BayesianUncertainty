@@ -12,6 +12,7 @@ classdef newSpring < handle
         origin = [0;0];
         coords
         numElbows = 2;
+        k
     end
 
     methods
@@ -145,8 +146,12 @@ classdef newSpring < handle
 
             obj.th3 = atan2((y_top - y_in), (x_top - x_in));
 
+        end
 
-
+        function predictKD(obj)
+            testForce = 1;
+            obj.th3Response(1)
+            obj.k = testForce / obj.th3;
         end
     end
 end
