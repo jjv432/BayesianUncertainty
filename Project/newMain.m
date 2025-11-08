@@ -1,17 +1,18 @@
 clc; clearvars; close all;
 
-L = 4;
-t = 1;
-w = 1; 
-r = 1;
+% All of these units are metric
+L = .005;
+t = .0005;
+w = .001; 
+r = .0005;
 
 s = newSpring(L, t, w, r);
 
-thetas = linspace(pi/2, pi/2 * 1.2, 20);
+forces = linspace(0, 2, 10);
 gca;
-for i = 1:numel(thetas)
+for i = 1:numel(forces)
     cla;
-    s.th3 = thetas(i);
+    s.th3Response(forces(i));
     s.fillCoords
     drawnow;
     

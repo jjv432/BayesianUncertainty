@@ -7,9 +7,11 @@ classdef newSpring < handle
         t
         w
         r
+        E = 1e5;
         th3 = pi/2 * 1.2
         origin = [0;0];
         coords
+        numElbows = 2;
     end
 
     methods
@@ -111,6 +113,38 @@ classdef newSpring < handle
             yvals_curve = [yvals_in, flip(yvals_out)];
 
             fill(xvals_curve, yvals_curve, 'g');
+
+
+        end
+
+        function th3Response(obj, F_load)
+            F_load = F_load / obj.numElbows;
+
+            I = (1/12) * obj.w * obj.t;
+
+            M = F_load *(obj.r + obj.t/2);
+
+            stress = M * (obj.t/2) / I;
+
+            strain = stress / obj.E;
+
+            l_od_0 = (pi/2) * (obj.r + obj.t);
+            l_id_0 = (pi/2) * obj.r;
+
+            theta_od = (l_od_0 + strain) / (obj.r + obj.t);
+            theta_id = (l_id_0 - strain) / (obj.r);
+
+            theta_1 = .5 * (theta_id + pi/2);
+            theta_2 = .5 * (theta_od + pi/2);
+
+            x_top = (obj.r + obj.t) * cos(theta_2);
+            y_top = (obj.r + obj.t) * sin(theta_2);
+
+            x_in = obj.r * cos(theta_1);
+            y_in = obj.r * sin(theta_1);
+
+            obj.th3 = atan2((y_top - y_in), (x_top - x_in));
+
 
 
         end
