@@ -13,6 +13,8 @@ classdef elbow < handle
         l_id_0
         x_offset = 0
         y_offset = 0
+        x_vals
+        y_vals
 
     end
 
@@ -64,7 +66,7 @@ classdef elbow < handle
             thetas = [theta_2, theta_1];
         end
 
-        function obj = plotOriginalShape(obj, bool)
+        function obj = makeCoords(obj)
             
             r_o = obj.r + obj.t;
             r_i = obj.r;
@@ -87,15 +89,9 @@ classdef elbow < handle
             yvals_in = yvals_in + obj.y_offset;
             yvals_out = yvals_out + obj.y_offset;
 
-            x_vals = [xvals_in, flip(xvals_out)];
-            y_vals = [yvals_in, flip(yvals_out)];
+            obj.x_vals = [xvals_in, flip(xvals_out)];
+            obj.y_vals = [yvals_in, flip(yvals_out)];
 
-            if bool
-                gca;
-
-                fill(x_vals, y_vals, 'b');
-
-            end
         end
 
         function handles = plotSingleAngularChange(obj, F_load)

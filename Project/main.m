@@ -23,8 +23,8 @@ elbowParams.E = 1E5;
 
 s = spring(4, connectorParams, elbowParams);
 
-s.generateConnectors();  % This creates all the connector objects and initializes their coordinates
-s.generateElbows();
+% s.generateConnectors();  % This creates all the connector objects and initializes their coordinates
+% s.generateElbows();
 
 s.constructSpring();
-s.plotSpring();
+% s.plotSpring();
