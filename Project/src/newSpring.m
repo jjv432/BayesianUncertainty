@@ -12,7 +12,8 @@ classdef newSpring < handle
         origin = [0;0];
         coords
         numElbows = 2;
-        k
+        ks
+        kd
     end
 
     methods
@@ -151,7 +152,8 @@ classdef newSpring < handle
         function predictKD(obj)
             testForce = 1;
             obj.th3Response(1)
-            obj.k = testForce / obj.th3;
+            obj.ks = testForce / obj.th3;
+            obj.kd = obj.ks/4; % FIX THIS
         end
     end
 end

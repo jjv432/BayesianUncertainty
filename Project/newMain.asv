@@ -1,22 +1,53 @@
 clc; clearvars; close all;
 
 % All of these units are metric
-L = .005;
-t = .0005;
+L = .01;
+t = .001;
 w = .001; 
-r = .0005;
+r = .004;
+
 
 s = newSpring(L, t, w, r);
+s.predictKD;
 
-s.k = s.th3Response
+m = s.ks/;
 
-forces = linspace(0, 2, 10);
-gca;
-for i = 1:numel(forces)
-    cla;
-    s.th3Response(forces(i));
-    s.fillCoords
-    drawnow;
-    
-end
+A = [0, 1; s.ks/m, -s.kd/m];
+B = [0; 1/m];
+C = [1 0];
+D = [0];
+
+% offsets.dx = 0;
+% offsets.u = 0;
+% offsets.x = [0; -m*9.81];
+% offsets.y = 0;
+% sys = ss(A, B, C, D, 'Offsets', offsets);
+
+sys = ss(A, B, C, D);
+
+G = tf(sys);     
+
+% time vector and input: step force of magnitude 1 N
+t = linspace(0,10,1000);
+u = ones(size(t));   % step force
+
+% simulate response to step
+[y, t_out, x] = lsim(sys, u, t);
+figure;
+plot(t_out, y, 'LineWidth', 1.2)
+
+
+%% OLD
+
+% Constantly increasing F
+
+% forces = linspace(0, 2, 10);
+% gca;
+% for i = 1:numel(forces)
+%     cla;
+%     s.th3Response(forces(i));
+%     s.fillCoords
+%     drawnow;
+% 
+% end
 
