@@ -153,7 +153,37 @@ classdef newSpring < handle
             testForce = 1;
             obj.th3Response(1)
             obj.ks = testForce / obj.th3;
-            obj.kd = obj.ks/4; % FIX THIS
+            obj.kd = obj.ks; % FIX THIS
+        end
+
+        function th3_ = inverseKinematics(obj, cur_y)
+            obj.makeCoords;
+            cs = obj.coords;
+
+            % Go from a known y to th3
+
+            natural_length = (2 * (obj.r + obj.t)) * obj.numElbows;
+
+            dy = (cur_y - natural_length) /2 ;
+
+            % We start out knowing where point H is because that's the
+            % given height. Also the x position doesn't change
+
+   
+            syms th3_
+            assume(th3_, 'real');
+
+            eqn = cur_y - cs.B(2) - 2*obj.r - obj.t == (2*obj.r + obj.t)*(th3_) + obj.t*cos(th3_); % small angle approx
+            % 
+            % r_BC = [obj.r*sin(th3_) + obj.r];
+            % r_CD = [obj.t*sin(th3_)];
+            % r_DE = [obj.L*cos(th3_)];
+            % 
+            % eqn = dy == cs.B(2) + r_BC + r_CD;
+
+            % th3_ = (cur_y - cs.B(2) - 2*obj.r - obj.t - obj.L ) / (2*obj.r + obj.t);
+            th3_ = (dy - 2*obj.r - obj.t - obj.L ) / (2*obj.r + obj.t);           
+
         end
     end
 end

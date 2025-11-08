@@ -3,9 +3,9 @@ clc; clearvars; close all;
 % All of these units are metric
 L = .01;
 t = .001;
-w = .001; 
+w = .01; 
 r = .004;
-m = .25;
+m = .05;
 
 s = newSpring(L, t, w, r);
 s.predictKD;
@@ -22,6 +22,9 @@ D = [0];
 % offsets.y = 0;
 % sys = ss(A, B, C, D, 'Offsets', offsets);
 
+% s.inverseKinematics(-2)
+
+
 sys = ss(A, B, C, D);
 
 t = linspace(0, 10, 200);
@@ -33,6 +36,17 @@ u = -m*9.81*ones(numel(t), 1);
 % plot displacement response
 figure;
 plot(t_out, y, 'LineWidth', 1.2)
+
+figure;
+
+for i = 1:numel(y)
+    cla;
+    s.inverseKinematics(y(i))
+    s.fillCoords
+    drawnow;
+
+end
+
 
 
 
