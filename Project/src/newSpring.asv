@@ -1,0 +1,53 @@
+classdef newSpring < handle
+    %UNTITLED Summary of this class goes here
+    %   Detailed explanation goes here
+
+    properties
+        L
+        t
+        w
+        r
+        th3 = pi/2
+        origin = [0;0];
+        coords
+    end
+
+    methods
+        function obj = newSpring(L, t, w, r)
+            %UNTITLED Construct an instance of this class
+            %   Detailed explanation goes here
+            obj.L = L;
+            obj.t = t;
+            obj.w = w;
+            obj.r = r;
+        end
+
+        function makeCoords(obj)
+            % all coords [x; y]
+            %METHOD1 Summary of this method goes here
+            %   Detailed explanation goes here
+            r_oA = [0; obj.t];
+            r_AB = [obj.L; 0];
+            r_BC = [cos(obj.th3); sin(obj.th3) + obj.r];
+            r_CD = [obj.t*cos(obj.th3); obj.t*sin(obj.th3)];
+            r_DF = [obj.L*sin(obj.th3); obj.L*sin(obj.th3)];
+
+            obj.coords.A = obj.origin + r_oA;
+            obj.coords.B = obj.coords.A + r_AB;
+            obj.coords.C = obj.coords.B + r_BC;
+            obj.coords.D = obj.coords.C + r_CD;
+            obj.coords.F = obj.coords.D + r_DF;
+        end
+
+        function dotPlotCoords(obj)
+            dots = ['A', 'B', 'C', 'D', 'F'];
+            gca;
+            hold on
+            
+            for i = 1:numel(dots)
+                scatter(obj.coords.(dots(i))(1), obj.coords.(dots(i))(2), 'x')
+            end
+
+        end
+    end
+end
