@@ -7,7 +7,7 @@ classdef newSpring < handle
         t
         w
         r
-        E = 1e4;
+        E = 1e6;
         th3 = pi/2 * 1.2
         origin = [0;0];
         coords
@@ -124,38 +124,24 @@ classdef newSpring < handle
 
             I = (1/12) * obj.w * obj.t;
 
-            M = F_load *(obj.r + obj.t/2);
+            % M = F_load *(obj.r + obj.t/2);
+            M = F_load *(obj.r);
 
             stress = M * (obj.t/2) / I;
 
             strain = stress / obj.E;
-
-            l_od_0 = (pi/2) * (obj.r + obj.t);
-            l_id_0 = (pi/2) * obj.r;
-
-            theta_od = (l_od_0 + strain) / (obj.r + obj.t);
-            theta_id = (l_id_0 - strain) / (obj.r);
-
-            theta_1 = .5 * (theta_id + pi/2);
-            theta_2 = .5 * (theta_od + pi/2);                                                                                                                                  
-
-            x_top = (obj.r + obj.t) * cos(theta_2);
-            y_top = (obj.r + obj.t) * sin(theta_2);
-
-            x_in = obj.r * cos(theta_1);
-            y_in = obj.r * sin(theta_1);
-
-            th3 = atan2((y_top - y_in), (x_top - x_in));
+            
+            th3 = strain / (obj.r + obj.t);
             
 
         end
 
         function predictKD(obj)
-            testForce = 10;
+            testForce = 100;
             th3_ = wrapTo2Pi(obj.th3Response(testForce) - pi/2);
             obj.ks = testForce / th3_;
-            obj.ks
-            obj.kd = obj.ks; % FIX THIS
+            obj.kd = obj.ks / 2; % FIX THIS
+            obj.kd = 0; % FIX THIS
             obj.th3 = pi/2;
         end
 

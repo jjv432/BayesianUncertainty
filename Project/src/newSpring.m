@@ -140,7 +140,7 @@ classdef newSpring < handle
             testForce = 100;
             th3_ = wrapTo2Pi(obj.th3Response(testForce) - pi/2);
             obj.ks = testForce / th3_;
-            obj.kd = obj.ks / 4; % FIX THIS
+            obj.kd = 6e-2; % FIX THIS
             obj.th3 = pi/2;
         end
 

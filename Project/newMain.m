@@ -6,37 +6,28 @@ FIX THE PART WHERE K IS CALC'D => th3Response
 % All of these units are metric
 L = .01;
 t = .001;
-w = .01; 
+w = .1; 
 r = .004;
-m = .005;
+m = .009;
 
 s = newSpring(L, t, w, r);
 
 s.predictKD();
-
-s.ks;
 
 A = [0, 1; -s.ks/m, -s.kd/m];
 B = [0; 1/m];
 C = [1 0];
 D = [0];
 
-% offsets.dx = 0;
-% offsets.u = 0;
-% offsets.x = [0; -m*9.81];
-% offsets.y = 0;
-% sys = ss(A, B, C, D, 'Offsets', offsets);
-
-% s.inverseKinematics(-2)
-
-
 sys = ss(A, B, C, D);
 
-t = linspace(0, 10, 200);
+t = linspace(0, 10, 1000);
 
 u = -m*9.81*ones(numel(t), 1);
-iter = 1:50;
-u(iter) = u(iter) * 2;
+iter = numel(t)/2;
+
+% u(numel(t)/2 : end) = zeros(numel(t)/2 + 1, 1);
+% u(iter) = u(iter).*2;
 
 [y, t_out, x] = lsim(sys, u, t);
 
