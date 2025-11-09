@@ -7,7 +7,7 @@ classdef newSpring < handle
         t
         w
         r
-        E = 1e8;
+        E = 1e4;
         th3 = pi/2 * 1.2
         origin = [0;0];
         coords
@@ -119,7 +119,7 @@ classdef newSpring < handle
 
         end
 
-        function obj = th3Response(obj, F_load)
+        function th3 = th3Response(obj, F_load)
             F_load = F_load / obj.numElbows;
 
             I = (1/12) * obj.w * obj.t;
@@ -137,7 +137,7 @@ classdef newSpring < handle
             theta_id = (l_id_0 - strain) / (obj.r);
 
             theta_1 = .5 * (theta_id + pi/2);
-            theta_2 = .5 * (theta_od + pi/2);
+            theta_2 = .5 * (theta_od + pi/2);                                                                                                                                  
 
             x_top = (obj.r + obj.t) * cos(theta_2);
             y_top = (obj.r + obj.t) * sin(theta_2);
@@ -145,15 +145,16 @@ classdef newSpring < handle
             x_in = obj.r * cos(theta_1);
             y_in = obj.r * sin(theta_1);
 
-            obj.th3 = atan2((y_top - y_in), (x_top - x_in));
+            th3 = atan2((y_top - y_in), (x_top - x_in));
+            
 
         end
 
-        function obj predictKD(obj)
-            testForce = 1;
-            obj.th3Response(10)
-            obj.th3
-            obj.ks = testForce / obj.th3;
+        function predictKD(obj)
+            testForce = 10;
+            th3_ = wrapTo2Pi(obj.th3Response(testForce) - pi/2);
+            obj.ks = testForce / th3_;
+            obj.ks
             obj.kd = obj.ks; % FIX THIS
             obj.th3 = pi/2;
         end

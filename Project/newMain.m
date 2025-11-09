@@ -35,12 +35,15 @@ sys = ss(A, B, C, D);
 t = linspace(0, 10, 200);
 
 u = -m*9.81*ones(numel(t), 1);
+iter = 1:50;
+u(iter) = u(iter) * 2;
 
 [y, t_out, x] = lsim(sys, u, t);
 
 % plot displacement response
 figure;
 plot(t_out, y, 'LineWidth', 1.2)
+
 
 figure;
 for i = 1:numel(y)
