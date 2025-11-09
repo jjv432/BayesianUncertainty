@@ -1,14 +1,16 @@
 clc; clearvars; close all;
 %{
 FIX THE PART WHERE K IS CALC'D => th3Response
+There's still the issue of differing test forces giving different spring
+constants. Idk
 %}
 
 % All of these units are metric
-L = .01;
-t = .001;
-w = .1; 
-r = .004;
-m = .009;
+L = .05;
+t = L * (1/10);
+w = L * 10; 
+r = L * (1/2.5);
+m = 100;
 
 s = newSpring(L, t, w, r);
 

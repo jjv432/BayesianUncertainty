@@ -131,16 +131,17 @@ classdef newSpring < handle
 
             strain = stress / obj.E;
             
+            % This is the small angle of th3. as in less than pi/2
             th3 = strain / (obj.r + obj.t);
             
 
         end
 
         function predictKD(obj)
-            testForce = 100;
-            th3_ = wrapTo2Pi(obj.th3Response(testForce) - pi/2);
+            testForce = 1000;
+            th3_ = wrapTo2Pi(obj.th3Response(testForce));
             obj.ks = testForce / th3_;
-            obj.kd = 6e-2; % FIX THIS
+            obj.kd = obj.ks * 0.003; % FIX THIS
             obj.th3 = pi/2;
         end
 
