@@ -105,4 +105,8 @@ plot(t_out, yIdeal, "LineWidth", 10)
 plot(t_out, yOptimized, '*k')
 hold off
 
-% Best params found: 0.3668    0.0006    0.0006    0.1536    0.0100
+% For E = 2e9:
+% Best params found:  0.1093    0.0572    0.0000    0.0937    0.0100
+
+figure()
+optimizedS.fillCoords();

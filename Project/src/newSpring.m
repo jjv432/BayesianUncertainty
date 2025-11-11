@@ -7,7 +7,7 @@ classdef newSpring < handle
         t
         w
         r
-        E = 1e6;
+        E = 2e9;
         th3 = pi/2 * 1.2
         origin = [0;0];
         coords
