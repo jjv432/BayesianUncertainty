@@ -1,4 +1,5 @@
 clc; clearvars; close all;
+addpath("src");
 %{
 FIX THE PART WHERE K IS CALC'D => th3Response
 There's still the issue of differing test forces giving different spring
