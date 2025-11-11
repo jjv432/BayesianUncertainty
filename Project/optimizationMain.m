@@ -101,5 +101,8 @@ optimalSys = ss(A, B, C, D);
 
 figure;
 hold on
-plot(t_out, yIdeal)
-plot(t_out, yOptimized, '-k')
+plot(t_out, yIdeal, "LineWidth", 10)
+plot(t_out, yOptimized, '*k')
+hold off
+
+% Best params found: 0.3668    0.0006    0.0006    0.1536    0.0100
