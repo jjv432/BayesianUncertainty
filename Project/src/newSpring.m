@@ -14,6 +14,7 @@ classdef newSpring < handle
         numElbows = 2;
         ks
         kd
+        kRatio
     end
 
     methods
@@ -141,7 +142,7 @@ classdef newSpring < handle
             testForce = 1000;
             th3_ = wrapTo2Pi(obj.th3Response(testForce));
             obj.ks = testForce / th3_;
-            obj.kd = obj.ks * 0.003; % FIX THIS
+            obj.kd = obj.ks * obj.kRatio; % FIX THIS
             obj.th3 = pi/2;
         end
 
