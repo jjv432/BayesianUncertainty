@@ -1,4 +1,4 @@
-clc; clear; close all;
+clc; clearvars; close all;
 addpath("src");
 %% Define the ideal response for the model
 
@@ -18,34 +18,20 @@ simTime = linspace(0, 5, 2000);
 
 u = -idealM*9.81*ones(numel(simTime), 1);
 
-[yIdeal, t_out, x] = lsim(idealSys, u, simTime);
+[yIdeal] = lsim(idealSys, u, simTime);
 
 %% Set up the spring object
-% Naive 'trust' in the model.
-
-% All of these units are metric
-L = .05;
-t = L * (1/10);
-w = L * 10;
-r = L * (1/2.5);
-m = 100;
-
-s = newSpring(L, t, w, r);
-
-s.predictKD();
-
 %% Setting up GA
 
 nvars = 5; % how many variables change
 
 % lower and upper bounds for each variable
 % L, t, w, r, ratio b/w kp and kd
-LB= [0.01 0.01 .05 .001, 1e-10];
-LB= [0, 0, 0, 0, 0] + 1e-12;
+LB= [0, 0, 0, 0, 0] + 1e-4;
 UB= [0.4, 0.4, 4, 0.16, 2];
 numparticles = 64;
 
-options = optimoptions('ga', 'PopulationSize', numparticles, 'UseParallel', false, 'MaxGenerations', 200);
+options = optimoptions('ga', 'PopulationSize', numparticles, 'UseParallel', false, 'MaxGenerations', 400);
 
 % Cost function handle
 costFunctionHandle = @(freeParams) ModelSimulationCost(freeParams);
@@ -62,14 +48,15 @@ function Cost = ModelSimulationCost(freeParams)
     s.kRatio = freeParams(5);
     s.predictKD();
 
-    % Run lsim to determine response
-    % B, C, and D remain the same
-    A = [0, 1; -s.ks/idealM, -s.kd/idealM];
-
-    curSys = ss(A, B, C, D);
-
-    % u and t are the same as the ideal
-    [y] = lsim(curSys, u, simTime);
+    y = getResponse(s.ks, s.kd);
+    % % Run lsim to determine response
+    % % B, C, and D remain the same
+    % A = [0, 1; -s.ks/idealM, -s.kd/idealM];
+    % 
+    % curSys = ss(A, B, C, D);
+    % 
+    % % u and t are the same as the ideal
+    % [y] = lsim(curSys, u, simTime);
 
     Cost = sum( (y - yIdeal).^2 );
 
