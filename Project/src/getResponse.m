@@ -1,6 +1,6 @@
 function [y, t] = getResponse(KS, KD)
     persistent B C D simTime u
-    idealM = 10;
+    global idealM;
 
     A = [0, 1; -KS/idealM, -KD/idealM];
     B = [0; 1/idealM];

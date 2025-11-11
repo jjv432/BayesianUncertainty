@@ -1,62 +1,37 @@
 clc; clear all; close all;
 addpath("src");
 %% Define the ideal response for the model
-
-idealKS = 200;
-idealKD = 2;
-global idealM B C D u simTime yIdeal
+global idealM
+idealKS = 400;
+idealKD = 5;
 idealM= 10;
 
-A = [0, 1; -idealKS/idealM, -idealKD/idealM];
-B = [0; 1/idealM];
-C = [1 0];
-D = [0];
+yIdeal = getResponse(idealKS, idealKD);
 
-idealSys = ss(A, B, C, D);
-
-simTime = linspace(0, 5, 2000);
-
-u = -idealM*9.81*ones(numel(simTime), 1);
-
-[yIdeal] = lsim(idealSys, u, simTime);
-
-%% Set up the spring object
 %% Setting up GA
 
 nvars = 5; % how many variables change
 
+% current best: 0.1866    0.0147    1e-10    0.0382    0.0100
+
 % lower and upper bounds for each variable
 % L, t, w, r, ratio b/w kp and kd
-LB= [0, 0, 0, 0, 0] + 1e-8;
-UB= [0.4, 0.4, 4, 0.16, 2];
-numparticles = 64;
+LB= [0, 0, 0, 0, 0] + 1e-10;
+UB= [0.2, 0.1, .01, 0.12, .02];
+numparticles = 256;
 
 options = optimoptions('ga', 'PopulationSize', numparticles, 'MaxGenerations', 400);
 
 % Cost function handle
-costFunctionHandle = @(freeParams) ModelSimulationCost(freeParams);
+costFunctionHandle = @(freeParams) ModelSimulationCost(freeParams, yIdeal);
 
-function Cost = ModelSimulationCost(freeParams)
-    global idealM B C D u simTime yIdeal
-    % Set up the new spring object
-    L = freeParams(1);
-    t = freeParams(2);
-    w = freeParams(3);
-    r = freeParams(4);
+function Cost = ModelSimulationCost(fP, yIdeal)
 
-    s = newSpring(L, t, w, r);
-    s.kRatio = freeParams(5);
+    s = newSpring(fP(1), fP(2), fP(3), fP(4));
+    s.kRatio = fP(5);
     s.predictKD();
 
     y = getResponse(s.ks, s.kd);
-    % % Run lsim to determine response
-    % % B, C, and D remain the same
-    % A = [0, 1; -s.ks/idealM, -s.kd/idealM];
-    % 
-    % curSys = ss(A, B, C, D);
-    % 
-    % % u and t are the same as the ideal
-    % [y] = lsim(curSys, u, simTime);
 
     Cost = sum( (y - yIdeal).^2 );
 
@@ -78,13 +53,7 @@ optimizedS = newSpring(L, t, w, r);
 optimizedS.kRatio = OptimizedParams(5);
 optimizedS.predictKD();
 
-
-A = [0, 1; -optimizedS.ks/idealM, -optimizedS.kd/idealM];
-
-optimalSys = ss(A, B, C, D);
-
-% u and t are the same as the ideal
-[yOptimized, t_out] = lsim(optimalSys, u, simTime);
+[yOptimized, t_out] = getResponse(optimizedS.ks, optimizedS.kd);
 
 figure;
 hold on
