@@ -1,4 +1,4 @@
-clc; clearvars; close all;
+clc; clear all; close all;
 addpath("src");
 %% Define the ideal response for the model
 
@@ -27,11 +27,11 @@ nvars = 5; % how many variables change
 
 % lower and upper bounds for each variable
 % L, t, w, r, ratio b/w kp and kd
-LB= [0, 0, 0, 0, 0] + 1e-4;
+LB= [0, 0, 0, 0, 0] + 1e-8;
 UB= [0.4, 0.4, 4, 0.16, 2];
 numparticles = 64;
 
-options = optimoptions('ga', 'PopulationSize', numparticles, 'UseParallel', false, 'MaxGenerations', 400);
+options = optimoptions('ga', 'PopulationSize', numparticles, 'MaxGenerations', 400);
 
 % Cost function handle
 costFunctionHandle = @(freeParams) ModelSimulationCost(freeParams);
