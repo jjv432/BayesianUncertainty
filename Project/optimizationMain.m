@@ -2,8 +2,8 @@ clc; clear all; close all;
 addpath("src");
 %% Define the ideal response for the model
 global idealM
-idealKS = 400;
-idealKD = 5;
+idealKS = 200;
+idealKD = 2;
 idealM= 10;
 
 yIdeal = getResponse(idealKS, idealKD);
@@ -17,8 +17,9 @@ nvars = 5; % how many variables change
 % lower and upper bounds for each variable
 % L, t, w, r, ratio b/w kp and kd
 LB= [0, 0, 0, 0, 0] + 1e-10;
-UB= [0.2, 0.1, .01, 0.12, .02];
-numparticles = 256;
+UB= [0.2, 0.02, .01, 0.06, .02];
+% numparticles = 256;
+numparticles = 64;
 
 options = optimoptions('ga', 'PopulationSize', numparticles, 'MaxGenerations', 400);
 
