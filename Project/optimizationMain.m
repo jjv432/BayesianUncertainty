@@ -6,20 +6,28 @@ idealKS = 200;
 idealKD = 2;
 idealM= 10;
 
-yIdeal = getResponse(idealKS, idealKD);
+[yIdeal, tIdeal] = getResponse(idealKS, idealKD);
+
+figure()
+plot(tIdeal, yIdeal, 'LineWidth', 10)
+xlabel("Time (s)");
+ylabel("Spring Height (m)");
+title("Ideal Spring Response");
+grid on
+saveas(gcf, "Reports/IdealSpringResponse.jpg");
 
 %% Setting up GA
 
 nvars = 5; % how many variables change
 
-% current best: 0.1866    0.0147    1e-10    0.0382    0.0100
+% current best: 0.0497    0.0007    2.9654e-07    0.0581    0.0100
 
 % lower and upper bounds for each variable
 % L, t, w, r, ratio b/w kp and kd
 LB= [0, 0, 0, 0, 0] + 1e-10;
 UB= [0.2, 0.02, .01, 0.06, .02];
-% numparticles = 256;
-numparticles = 64;
+
+numparticles = 128;
 
 options = optimoptions('ga', 'PopulationSize', numparticles, 'MaxGenerations', 400);
 
@@ -56,14 +64,57 @@ optimizedS.predictKD();
 
 [yOptimized, t_out] = getResponse(optimizedS.ks, optimizedS.kd);
 
+%% Plotting optimized
+
+% Temporary
+% S = newSpring(0.1866, 0.0147, 1e-10, 0.0382);
+% S.kRatio = 0.0100;
+% S.predictKD();
+% 
+% [yOptimized, t_out] = getResponse(S.ks, S.kd);
+
+
 figure;
 hold on
 plot(t_out, yIdeal, "LineWidth", 10)
 plot(t_out, yOptimized, '*k')
+xlabel("Time (s)");
+ylabel("Spring Height (m)");
+title("Real and Ideal Spring Response");
+grid on
+% saveas(gcf, "Reports/RealAndIdealSpringResponse.jpg");
 hold off
 
-% For E = 2e9:
-% Best params found:  0.1093    0.0572    0.0000    0.0937    0.0100
+%% Old code
 
-figure()
-optimizedS.fillCoords();
+% %%
+% figure()
+% optimizedS.fillCoords();
+% 
+% %%
+% s = newSpring(0.1866, 0.0147, 1e-10, 0.0382);
+% s.kRatio= .01;
+% s.predictKD;
+% 
+% y = yOptimized;
+% figure;
+% for i = 1:numel(y)
+%     cla;
+%     s.inverseKinematics(y(i));
+%     s.fillCoords;
+%     drawnow;
+% 
+% end
+% 
+% %%
+% % Constantly increasing F
+% 
+% forces = linspace(0, 2, 10);
+% gca;
+% for i = 1:numel(forces)
+%     cla;
+%     s.th3Response(forces(i));
+%     s.fillCoords
+%     drawnow;
+% 
+% end
