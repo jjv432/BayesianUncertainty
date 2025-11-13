@@ -91,6 +91,7 @@ ylabel("Spring Height (m)");
 title("Real and Ideal Spring Response");
 grid on
 % saveas(gcf, "Reports/RealAndIdealSpringResponse.jpg");
+saveas(gcf, "Reports/Reduced_RealAndIdealSpringResponse.jpg");
 hold off
 
 %% Old code
