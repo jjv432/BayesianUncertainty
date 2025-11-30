@@ -149,11 +149,11 @@ classdef newSpring < handle
 
         function predictKDMems(obj)
             % Ref: Wang, Zhang, Zhang 2018
-
             % Update stiffness
             obj.makeComplianceMatrix();
 
             % Update drag
+            predictDragForceFnU2(obj);
         end
 
         function predictDragForceFnU2(obj)
@@ -170,6 +170,7 @@ classdef newSpring < handle
             R = obj.r_;
             t = obj.t_;
             w = obj.w_;
+            E = obj.E_;
 
             m = 432*l^2*R^4 - 144*R^6 + 60*l^4*R^2 + 27*pi^2*R^6 ...
                 + 4*l^4*t^2 + 108*pi*l^3*R^3 + 18*l^2*pi^2*R^4 ...
@@ -193,7 +194,7 @@ classdef newSpring < handle
 
             a13 = 3*(l^2 + pi*l*R + 2*R^2)*R^2 * E*w*t^3;
             a23 = -(4*l^3 + 6*pi*l^2*R + 24*l*R^2 + 3*pi*R^3)*E*w*t^3;
-            a33 = (1584*l^2*R^4 - 144*R^6 + 252l^4*R^2 + 99*pi^2*R^6 ...
+            a33 = (1584*l^2*R^4 - 144*R^6 + 252*l^4*R^2 + 99*pi^2*R^6 ...
                   + 4*l^4*t^2 + 492*pi*l^3*R^3 + 162*l^2*pi^2*R^4 ...
                   + 24*l^2*R^2*t^2 + 864*pi*l*R^5 + 3*pi*l*R^3*t^2 ...
                   + 6*pi*l^3*R*t^2) * E*w*t^3;
