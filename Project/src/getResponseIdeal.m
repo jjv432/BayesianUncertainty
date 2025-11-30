@@ -1,4 +1,4 @@
-function [y, t] = getResponse(KS, KD)
+function [y, t] = getResponseIdeal(KS, KD)
     persistent B C D simTime u
     global idealM;
 
