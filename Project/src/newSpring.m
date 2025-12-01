@@ -8,6 +8,8 @@ classdef newSpring < handle
         w_
         r_
         E_ = 2e9;
+        m_
+        alpha_ = 1;
         th3_ = pi/2 * 1.2
         origin_ = [0;0];
         coords_
@@ -20,13 +22,15 @@ classdef newSpring < handle
     end
 
     methods
-        function obj = newSpring(L, t, w, r)
+        function obj = newSpring(L, t, w, r, m, alpha)
             %UNTITLED Construct an instance of this class
             %   Detailed explanation goes here
             obj.L_ = L;
             obj.t_ = t;
             obj.w_ = w;
             obj.r_ = r;
+            obj.m_ = m;
+            obj.alpha_ = alpha;
             obj.makeComplianceMatrix();
         end
 
@@ -147,6 +151,29 @@ classdef newSpring < handle
         %%%%%%%%%%%%%%%%%%%%%%% DYNAMICS METHODS %%%%%%%%%%%%%%%%%%%%%%%%%%
         %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+        function [y, t] = getResponse(obj, simTime)
+            obj.predictKDMems();
+            
+            m = obj.m_;
+            ksMat = obj.complianceMatrix_;
+            kd = obj.Fd_DivU2_;
+
+            u = [1; 0; 0];
+            ks = u'*ksMat*u;
+
+            A = [0, 1; -ks/m, -kd/m];
+            B = [0; 1/m];
+            C = [1 0];
+            D = [0];
+
+            sys = ss(A, B, C, D);
+
+            u = -m*9.81*ones(numel(simTime), 1);
+
+            [y, t] = lsim(sys, u, simTime);
+
+        end
+
         function predictKDMems(obj)
             % Ref: Wang, Zhang, Zhang 2018
             % Update stiffness
@@ -161,7 +188,7 @@ classdef newSpring < handle
             A = 2*obj.L_*obj.w_;
             rho = 1.225;
 
-            obj.Fd_DivU2_ = .5 * rho * Cd * A;
+            obj.Fd_DivU2_ = obj.alpha_ * .5 * rho * Cd * A;
 
         end
 

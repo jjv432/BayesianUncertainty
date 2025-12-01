@@ -1,74 +1,49 @@
-clc; clearvars; close all;
+clc; clearvars -except optimizedSpring; close all;
 addpath("src");
-%{
-FIX THE PART WHERE K IS CALC'D => th3Response
-There's still the issue of differing test forces giving different spring
-constants. Idk
-%}
 
+%% General
 % All of these units are metric
-L = .05;
-t = L * (1/10);
-w = L * 10; 
-r = L * (1/2.5);
-m = 100;
+m = 5;
 
-s = newSpring(L, t, w, r);
+maxTime = 5;
+numSimPoints = 1e3;
+simTime = linspace(0, maxTime, numSimPoints);
 
-s.predictKD();
+%% Define the ideal response for the model
+idealKS = 200;
+idealKD = 2;
 
+[yIdeal, tIdeal] = getResponseIdeal(idealKS, idealKD, m, simTime);
 
+%% Testing runOptimization.m
 
+% run the optimization
+optimizedSpring = runOptimization(m, simTime, yIdeal, tIdeal);
+hold off;
 
+% animate the behavior of the ideal spring
+[y, t] = optimizedSpring.getResponse(simTime);
 
+figure;
+for i = 1:10:numel(y)
+    cla;
+    optimizedSpring.inverseKinematics(y(i));
+    optimizedSpring.fillCoords;
+    drawnow;
 
+end
 
+%% Testing runSensitivity.m
+% L, t, w, r, (m), alpha
+L = optimizedSpring.L_;
+t = optimizedSpring.t_;
+w = optimizedSpring.w_;
+r = optimizedSpring.r_;
+alpha = optimizedSpring.alpha_;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-% A = [0, 1; -s.ks/m, -s.kd/m];
-% B = [0; 1/m];
-% C = [1 0];
-% D = [0];
-% 
-% sys = ss(A, B, C, D);
-% 
-% t = linspace(0, 10, 1000);
-% 
-% u = -m*9.81*ones(numel(t), 1);
-% iter = numel(t)/2;
-% 
-% % u(numel(t)/2 : end) = zeros(numel(t)/2 + 1, 1);
-% % u(iter) = u(iter).*2;
-% 
-% [y, t_out, x] = lsim(sys, u, t);
-% 
-% % plot displacement response
-% figure;
-% plot(t_out, y, 'LineWidth', 1.2)
-% 
-% 
-% figure;
-% for i = 1:numel(y)
-%     cla;
-%     s.inverseKinematics(y(i));
-%     s.fillCoords;
-%     drawnow;
-% 
-% end
+fixedPoint(1) = L;
+fixedPoint(2) = t;
+fixedPoint(3) = w;
+fixedPoint(4) = r;
+fixedPoint(5) = alpha;
+runSensitivity(m, yIdeal, tIdeal, fixedPoint)
