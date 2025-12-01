@@ -2,7 +2,7 @@ function runSensitivity(mass, yIdeal, tIdeal, simTime, fixedPoint)
 
     %% Begin Finite Diff
 
-    delta = .0001;
+    delta = .0005;
     numTestPoints = 300; % MUST BE EVEN
 
     % Each row is a param, each column is a test point
