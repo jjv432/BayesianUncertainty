@@ -39,14 +39,8 @@ f2Plot = subs(f2, [var0, x], [var0Fixed, 5*t]);
 f2Plot = double(subs(f2Plot, t, tPlot));
 
 
-lw = 3;
 figure();
 hold on
-plot(tPlot, f1Plot, '--k', 'DisplayName', 'Temporal', 'LineWidth', lw)
-plot(tPlot, f2Plot, '--r', 'DisplayName', 'Spacial', 'LineWidth', lw)
-plot(tPlot, f2Plot./f1Plot, '.b', 'DisplayName', 'Computed \alpha', 'MarkerSize', 20)
-yline(2/var0Fixed, 'c', 'DisplayName', 'Expected \alpha', 'LineWidth', lw )
-grid on
-hold off
-legend()
-title("Spacial and Temporal Derivatives with Variance " + string(var0Fixed));
+plot(tPlot, f1Plot, '--k', 'DisplayName', 'Temporal')
+plot(tPlot, f2Plot, '--r', 'DisplayName', 'Spacial')
+plot(tPlot, f2Plot./f1Plot,'DisplayName', 'Spacial' )

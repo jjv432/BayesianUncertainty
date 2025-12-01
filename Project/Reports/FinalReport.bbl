@@ -1,0 +1,62 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.3 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{none/global//global/global/global}
+    \entry{mems}{article}{}{}
+      \name{author}{3}{}{%
+        {{hash=9d2697b1f828265e1e560dad6fb85044}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={N.F.},
+           giveni={N\bibinitperiod}}}%
+        {{hash=8ad67b2055d1bc29ad5f035706a92a59}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Xianmin},
+           giveni={X\bibinitperiod}}}%
+        {{hash=309fd9f27e3403bd711f9a2857d7fd1e}{%
+           family={Zhang},
+           familyi={Z\bibinitperiod},
+           given={Zhiyuan},
+           giveni={Z\bibinitperiod}}}%
+      }
+      \strng{namehash}{4272762d3b14f85a2a497deb6b43f691}
+      \strng{fullhash}{93d8e2d19a97df9e942895f6d9e072ad}
+      \strng{fullhashraw}{93d8e2d19a97df9e942895f6d9e072ad}
+      \strng{bibnamehash}{93d8e2d19a97df9e942895f6d9e072ad}
+      \strng{authorbibnamehash}{93d8e2d19a97df9e942895f6d9e072ad}
+      \strng{authornamehash}{4272762d3b14f85a2a497deb6b43f691}
+      \strng{authorfullhash}{93d8e2d19a97df9e942895f6d9e072ad}
+      \strng{authorfullhashraw}{93d8e2d19a97df9e942895f6d9e072ad}
+      \field{sortinit}{1}
+      \field{sortinithash}{4f6aaa89bab872aa0999fec09ff8e98a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Mechanical Engineering SCience}
+      \field{title}{Stiffness analysis of corrugated flexure beam using stiffness matrix method}
+      \field{volume}{203-210}
+      \field{year}{2018}
+      \field{pages}{1989\bibrangedash 1996}
+      \range{pages}{8}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

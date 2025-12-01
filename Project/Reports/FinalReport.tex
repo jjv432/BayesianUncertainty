@@ -1,0 +1,230 @@
+\documentclass[conference]{article}
+
+% Packages for additional functionality
+\usepackage[margin=.75in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath, amssymb}
+\usepackage{graphicx}
+\usepackage{algorithm}
+\usepackage{algorithmic}
+\usepackage[backend=biber,style=numeric,citestyle=ieee]{biblatex}
+\usepackage{pdfpages}
+\usepackage{subcaption}
+\addbibresource{references.bib}
+
+\title{\LARGE \bf
+White Paper
+}
+\author{
+    Jack Vranicar
+}
+\begin{document}
+\maketitle
+
+\thispagestyle{empty}
+\pagestyle{empty}
+
+\section{Abstract}
+%When designing dynamic systems, it is often necessary to employ the use of springs. These springs are used to reduce the impact that disturbances on the system may cause, store energy, or ensure mechanical certainty (e.g. a push button has a spring to ensure that it does not get stuck in an intermediate state). To ensure the proper system response, the designer will have to carefully select system parameters. These parameters include spring stiffness, damping, and the mass of the system. By tuning these parameters, the system's response to outside forces will be predictable and will follow the desired behavior. 
+
+Typically, when selecting a spring, one can know with relative certainty what the spring constant will be. This is because the spring coefficient for certain spring designs and materials is well studied and characterized. However, if it is desirable to create an assembly solely with 3D printed parts, one will have difficulty applying these formulas. This is because it is difficult to reliably print a helical pattern with typical consumer grade 3D printers. To address this, an 'S' shaped spring model is introduced, and its response characterized. Sensitivity analysis is performed on this model to reduce the parameter set, and the results compared against a reference spring.
+\section{Motivation}
+% Describe the project to a layperson and include the statistaical mehtods you plan to use. Be clear on what params will be considered random params for UQ. This set may be reduced based on sensitivity analysis
+
+\subsection{Background}
+
+For Mechanical Engineers, there are a number of considerations that must be made when designing a system, especially if it is a dynamic system. These dynamic systems have moving components and are subject to numerous external forces. To react to these external forces, there are a couple of schemes that are typically used. The first is passive control. This refers to a system that can react to disturbances appropriately, simply by virtue of its compliance and damping. There is also active control, which includes using actuators and sensors to effect the desired system response. Often, passive and active control schemes are used together to reap the benefits of both schemes. For the purposes of this analysis, only passive systems will be discussed.
+
+%Consider a car as an example. As the car drives down the road, the driver might brake, accelerate, corner, go up a hill, etc. The designers must carefully consider how the car will react to each of these actions, namely by changing suspension characteristics. A suspension, in its simplest form, is a spring and damper in parallel with each other. The spring resists changes in position, and the damper resists changes in velocity. By carefully tuning the spring's stiffness and damper's damping coefficient, the designers can create the desired effect: 'go-kart' like handling for sports cars, and comfortable, stable rides for minivans.
+
+When engineers are designing systems, it is typical to go through a number of iterations. This process helps make small changes to designs, compare iterations to each other and ending up with the best product. It is becoming increasingly popular to create these prototypes out of 3D printed materials as they allow for cheap, fast, and in-house manufacturing of all components. However, this approach is typically limited to static applications- parts that fasten to each other or do not require precise passive control considerations. One usually does not 3D print precise compliant parts due to the complexity of characterizing the spring's coefficients.  This can prove to be a serious limitation in a few cases, including a scale-model of a passively controlled system, or a passively controlled system that is intended to remain 3D printed. 
+
+If a 3D printed spring could be precisely characterized, a number of benefits would become available to designers. The flexibility that printing one's own springs opens a wide variety of designs previously impossible with traditional methods. This can lead to innovative, novel solutions which can compensate for limitations of other designs. For this reason, the goal of this analysis is to determine a model which can reliably determine the spring constant and damping coefficient of a 3D printed spring.
+
+
+\subsection{Model Description}
+
+The model that will be employed for this analysis is an 'S'-shaped structure with discrete components. These components are shown below in Figure \ref{fig:SpringAnnotated}. The red 'connecters' are assumed to be rigid bodies- they will remain at the same shape regardless of applied loads. The green 'elbows' are the compliant components of this system. A derivation of how they react to stress is discussed below. It is assumed that the applied force is equally distributed to both elbows, and that both elbows deform equally. Furthermore, it is assumed that the bottom 'connector' is rigidly attached to the ground. Finally, it is assumed that all components are mass-less, with all of the mass residing at a point on the top and center of the top 'connector.'
+
+
+The first four parameters of this system describe the shape of the spring. Most of these parameters are displayed in Figure \ref{fig:SpringAnnotated}. A parameter not shown in \ref{fig:SpringAnnotated} is the Width 'w,' which is the dimension into the page. This is a constant value for all of the components of the spring.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+	    \includegraphics[width= \linewidth]{AnnotatedGraphic.jpg}
+	    \caption{Spring Model: Uncompressed}
+	    \label{fig:SpringAnnotated}
+    \end{subfigure}%
+    ~ 
+    \begin{subfigure}[t]{0.5\textwidth}
+       \centering
+    \includegraphics[width=\linewidth]{CompressedSpring.jpg}
+    \caption{Spring Model: Compressed}
+    \label{fig:SpringCompressed}
+    \end{subfigure}
+    \caption{Spring Model Compressed and Uncompressed}
+\end{figure}
+
+The set of parameters $\theta$ that will be considered random variables for future uncertainty quantification are the parameters that define the spring as well as a ratio $\alpha$ that defines the damping coefficient:  
+
+\begin{equation}
+\theta =
+	\begin{bmatrix}
+		L & r & t & w & \alpha \\
+	\end{bmatrix} ^T
+	\label{eqn:OGParms}
+\end{equation}
+
+Below, this set is reduced using local sensitivity analysis. 
+
+\subsection{Model Dynamics}
+
+This system is modeled to behave as if it is a spring-mass-damper system. All of the mass is assumed to be concentrated at a point on the top of the spring. The damping is considered to be a linear function of velocity, and the stiffness is assumed to be a constant parameter based on physical and geometrical properties. Also, the system is assumed to have only one degree of freedom which is vertical displacement. 
+
+The stiffness of this system is determined using the results derived by Wang et al. In this analysis, the characteristics of a micro-electro-mechanical system (MEMS) are determined through simulation and Finite Element Analysis (FEA). This MEMS structure is similar to the spring structure proposed in this analysis. The result of this analysis is that a stiffness matrix can be formed based solely on the properties of the materials and the shape of the MEMS structure. Because this derivation is quite complex, it will not be included. However, the stiffness matrix will herein be referred to as $\vec{K}$ \cite{mems}
+
+Because this model is only using one degree of freedom, the 
+
+The damping of this system was assumed to come only from drag. Typically, drag is a function of the square of velocity. This causes the model to be more complex due to nonlinearities. To reduce the complexity, a first order Taylor series approximation of the drag is taken. Because the drag of a system is zero when its velocity is zero, this approximation simplifies to the time derivative of drag. Also, it is assumed that the drag will act in equal magnitude in both directions. Furthermore, a scaling term $\alpha$ is included to account for any unmodeled properties of the spring that contribute to drag. The damping force used for the spring is shown below in Equation \ref{eqn:Fd}.
+
+\begin{equation}
+	F_d = \alpha C_d \rho A u
+\label{eqn:Fd}
+\end{equation}
+
+where $C_d$ is the coefficient of drag due to the shape of the top surface of the spring (the flat face), $\rho$ is the density of air, $A$ is the cross-sectional area of the top surface of the spring, and $u$ is the vertical velocity of the spring.
+
+\subsection{Proposed Statistical Methods}
+% Write about monte carlo
+
+In the future, uncertainty quantification will be performed on this system to quantify each of the system parameters. To do this, Markov Chain Monte Carlo (MCMC) sampling will be applied. This method is selected as it allows parameter uncertainty to be determined for all parameters. Also, MCMC will help to explore a wide range of combinations for each of the parameters. This is necessary for this model as optimizations have demonstrated a number of modes for spring parameters. These modes include springs that have: very large $r$ and $t$ values but very small $L$ values; very large $r$ and $L$ values but very small $t$ values; and balanced $r$ $L$, and $t$ values. For each of these modes, the value of $w$ is typically very small. By exploring the entire parameter space, it may be possible to find equivalent springs that are constructed in different modes, allowing for more flexibility in design.
+
+To simulate measurement noise and dimensional errors in the spring's construction, Gaussian noise will be added to each of the sample points of candidate springs used when matching the model to the ideal spring. 
+
+
+\section{Analysis}
+% Inlude an application of sensitivity (local or global) to understand if all parameters or some subset of parameters can be identified. Justify the type of sensitivity you use. This should be followed by an optimization of your random
+% parameters (no UQ). 
+
+
+\subsection{Optimization of Random Parameters}
+To analyze the behavior of the model, a reference, or 'ideal,' spring-mass-damper system was created. Then, a genetic algorithm was used to best fit the parameters $\theta$ of the model to this ideal behavior. In both cases, a state-space model was utilized to predict the output of the springs. Because the springs are considered to be massless, the mass of the spring was applied as a constant input force to the system. The state vector $x$ is defined as: 
+\begin{equation}
+x = \begin{bmatrix}
+y\\ \dot{y}\\
+\end{bmatrix}
+\end{equation}
+
+where $y$ is the total height of the spring and $\dot{y}$ is the vertical velocity of the spring.\\
+
+\noindent The following parameters A, B, C, and D were used to construct the state-space model:
+
+\begin{equation}
+A = \begin{bmatrix}
+0 & 1 \\ -ks/m & -kd/m\\
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+B = \begin{bmatrix}
+0 & 1/m\\
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+C = \begin{bmatrix}
+1& 0\\
+\end{bmatrix}
+\end{equation}
+
+\begin{equation}
+D = \begin{bmatrix}
+ 0\\
+\end{bmatrix}
+\end{equation}
+
+where $ks$ is the spring constant,  $kd$ is the damping coefficient, and  $m$ is the mass.
+
+\subsubsection{Defining the Ideal Behavior}
+\label{sec:Ideal}
+
+To define the ideal behavior, the values $ks$, $kd$ and $m$ were defined as 200, 2, and 10, respectively. Then, using the aforementioned state-space model, the ideal height response was defined as shown in Figure \ref{fig:IdealResponse}. 
+
+\subsubsection{Applying the Genetic Algorithm}
+\label{sec:GA}
+
+A genetic algorithm was applied to determine the optimal set of parameters to match the model to the ideal response. The cost function used for this algorithm was the Root Sum of Squares (RSS) of the model's response and the ideal spring's response. The set of parameters to achieve this fit was found to be:
+
+\begin{equation}
+	\theta_{opt} = \begin{bmatrix}
+	0.0497  &  0.0007  &  2.97e-07 &  0.0581 & 0.0100
+\end{bmatrix}^T
+\label{eq:ThOpt}
+\end{equation}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+	    \includegraphics[width= \linewidth]{IdealSpringResponse.jpg}
+	    \caption{Ideal Spring Response}
+	    \label{fig:IdealResponse}
+    \end{subfigure}%
+    ~ 
+    \begin{subfigure}[t]{0.5\textwidth}
+       \centering
+    \includegraphics[width=\linewidth]{RealAndIdealSpringResponse.jpg}
+    \caption{Model Response}
+    \label{fig:SpringCompressed}
+    \end{subfigure}
+    \caption{Ideal and Model Responses}
+\end{figure}
+
+\subsection{Sensitivity Analysis}
+
+The parameter set described in Equation \ref{eq:ThOpt} was used as the fixed point for sensitivity analysis using finite differerencing.
+
+There are other optimized sets of model parameters, however these combinations tend to create a spring which is not feasible to manufacture, namely because they become very tall and thin. For this reason, local sensitivity was considered to be appropriate to avoid entering these regions.
+
+Furthermore, finite differencing was utilized as the computational load of the model is small and this method is naive to the system's dynamics. This allows for fine tuning of the model in the future without affecting the efficacy of the sensitivity analysis. Complex step method was not utilized due to the unstable affects of using complex number to define dimensions.
+
+Starting at the fixed point, each model parameter was perturbed using finite differencing. A scaled distance $\Delta$ is defined for each model parameter $\theta_{opt}^i $ such that the maximum value is $\theta_{opt}^i +  \Delta \theta_{opt}^i  $ and the minimum value is  $\theta_{opt}^i  -  \Delta \theta_{opt}^i  $ . By repeating this process over multiple test points for each model parameter, an approximation of the Jacobian of the model near the fixed point is defined as $S$. Each of these sensitivities is plotted against the test points that were used, as shown in Figure \ref{fig:LocalSens}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width= .8\linewidth]{LocalSens.jpg}
+    \caption{Local Sensitivities}
+    \label{fig:LocalSens}
+ \end{figure}
+ 
+ From Figure \ref{fig:LocalSens}, it can be concluded that $\theta_1$ is insensitive and therefore is unidentifiable. For this reason, the parameter set, defined in Equation \ref{eqn:OGParms}, can be reduced to:
+ 
+ \begin{equation}
+\theta_{RED} =
+	\begin{bmatrix}
+		r & t & w & \alpha \\
+	\end{bmatrix} ^T
+	\label{eqn:RedParms}
+\end{equation}
+ 
+ Using the genetic algorithm described in Section \ref{sec:GA}, this reduced set of parameters was optimized. Figure \ref{fig:OptFit} below shows the results of this parameter fitting.
+ 
+ \begin{figure}[H]
+    \centering
+    \includegraphics[width=.75  \linewidth]{Reduced_RealAndIdealSpringResponse.jpg}
+    \caption{Model Fitting with $\theta_{RED}$}
+    \label{fig:OptFit}
+ \end{figure}
+ 
+\section{Discussion}
+% Describe what you learned and your plans to apply Bayesian uncertainty quantification to the random params in the model
+During this process, it became evident that the implementation of new constraints will be necessary for this model to be useful for real 3D printed parts. This will prevent dimensions that are too small for a consumer grade 3D-printer to achieve. Furthermore, when animating the system response, it became clear that some springs were allowed to pass through themselves, clearly violating the laws of physics. For this reason, non-linear constraints must be incorporated to assign a large cost to springs that pass through themselves. Furthermore, it will be necessary to more carefully craft the ideal spring response to avoid creating conditions in which the spring will be forced to pass through itself.  Future work will include addressing these concerns.
+
+Moving forward to uncertainty quantification, this process made it clear that the parameter set can be reduced to four parameter instead of five. This will prove to be useful in limiting the computational demand and make drawing conclusions about the system easier. Also, the parameter set can be reduced even further by fixing a value for the thickness $t$, and defining the other parameters some factor of this value. This will hopefully solve the current issue of optimal values for `t' solving to be smaller than possible with 3D prints.
+\newpage
+\printbibliography
+
+
+\end{document}
