@@ -46,4 +46,4 @@ fixedPoint(2) = t;
 fixedPoint(3) = w;
 fixedPoint(4) = r;
 fixedPoint(5) = alpha;
-runSensitivity(m, yIdeal, tIdeal, fixedPoint)
+runSensitivity(m, yIdeal, tIdeal, simTime, fixedPoint)

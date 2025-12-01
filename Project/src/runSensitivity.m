@@ -1,9 +1,9 @@
-function runSensitivity(mass, yIdeal, tIdeal, fixedPoint)
+function runSensitivity(mass, yIdeal, tIdeal, simTime, fixedPoint)
 
     %% Begin Finite Diff
 
     delta = .0001;
-    numTestPoints = 100; % MUST BE EVEN
+    numTestPoints = 300; % MUST BE EVEN
 
     % Each row is a param, each column is a test point
     % ! Shoudl really be numTP - 1 b/c th_i duplicated
