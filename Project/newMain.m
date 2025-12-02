@@ -24,17 +24,19 @@ hold off;
 % animate the behavior of the ideal spring
 [y, t] = optimizedSpring.getResponse(simTime);
 
-% figure;
-% for i = 1:10:numel(y)
-%     cla;
-%     optimizedSpring.inverseKinematics(y(i));
-%     optimizedSpring.fillCoords;
-%     drawnow;
-% 
-% end
+animate = 0;
+if animate
+    figure();
+    for i = 1:10:numel(y)
+        cla;
+        optimizedSpring.inverseKinematics(y(i));
+        optimizedSpring.fillCoords;
+        drawnow;
 
+    end
+end
 %% Determine the Sensitivity of the Parameters
-% L, t, w, r, (m), alpha
+% L, t, w, r, (m), alpha, E
 L = optimizedSpring.L_;
 t = optimizedSpring.t_;
 w = optimizedSpring.w_;
@@ -49,4 +51,15 @@ fixedPoint(4) = r;
 fixedPoint(5) = alpha;
 fixedPoint(6) = E;
 
+%%
+fpSave = fixedPoint;
+fpSave(end) = fpSave(end) / 1e9;
+fpSave = round(fpSave, 2);
+
+s = matrix2latex(fpSave);
+s = string(s);
+s = strrep(s, string(fpSave(end)), string(fpSave(end)) + "E9");
+fid = fopen('Reports/optimizedParams.tex', 'w');
+fprintf(fid, '%s', s);
+fclose(fid);
 runSensitivity(m, yIdeal, tIdeal, simTime, fixedPoint)

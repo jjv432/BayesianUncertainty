@@ -44,10 +44,19 @@ If a 3D printed spring could be precisely characterized, a number of benefits wo
 
 \subsection{Model Description}
 
-The model that will be employed for this analysis is an 'S'-shaped structure with discrete components. These components are shown below in Figure \ref{fig:SpringAnnotated}. The red 'connecters' are assumed to be rigid bodies- they will remain at the same shape regardless of applied loads. The green 'elbows' are the compliant components of this system. A derivation of how they react to stress is discussed below. It is assumed that the applied force is equally distributed to both elbows, and that both elbows deform equally. Furthermore, it is assumed that the bottom 'connector' is rigidly attached to the ground. Finally, it is assumed that all components are mass-less, with all of the mass residing at a point on the top and center of the top 'connector.'
+Four of the parameters of this system describe its geometry Most of these parameters are displayed in Figure \ref{fig:SpringAnnotated}. A parameter not shown in \ref{fig:SpringAnnotated} is the Width $w$, which is the dimension into the page. This is a constant value for all of the components of the spring. Two more parameters, $\alpha$ and $E$, are included but do not relate to geometry. The definition of $\alpha$ is included in Equation \ref{eqn:kD}. $E$ is the measure of the Young's modulus for the spring.
 
+The set of parameters $\theta$ that will be considered random variables for uncertainty quantification are the aforementioned parameters:
 
-The first four parameters of this system describe the shape of the spring. Most of these parameters are displayed in Figure \ref{fig:SpringAnnotated}. A parameter not shown in \ref{fig:SpringAnnotated} is the Width 'w,' which is the dimension into the page. This is a constant value for all of the components of the spring.
+\begin{equation}
+\theta =
+	\begin{bmatrix}
+		L & r & t & w & \alpha & E \\
+	\end{bmatrix} ^T
+	\label{eqn:OGParms}
+\end{equation}
+
+Below, this set is reduced using local sensitivity analysis. 
 
 \begin{figure}[H]
     \centering
@@ -67,41 +76,35 @@ The first four parameters of this system describe the shape of the spring. Most 
     \caption{Spring Model Compressed and Uncompressed}
 \end{figure}
 
-The set of parameters $\theta$ that will be considered random variables for future uncertainty quantification are the parameters that define the spring as well as a ratio $\alpha$ that defines the damping coefficient:  
 
-\begin{equation}
-\theta =
-	\begin{bmatrix}
-		L & r & t & w & \alpha \\
-	\end{bmatrix} ^T
-	\label{eqn:OGParms}
-\end{equation}
-
-Below, this set is reduced using local sensitivity analysis. 
 
 \subsection{Model Dynamics}
 
 This system is modeled to behave as if it is a spring-mass-damper system. All of the mass is assumed to be concentrated at a point on the top of the spring. The damping is considered to be a linear function of velocity, and the stiffness is assumed to be a constant parameter based on physical and geometrical properties. Also, the system is assumed to have only one degree of freedom which is vertical displacement. 
 
-The stiffness of this system is determined using the results derived by Wang et al. In this analysis, the characteristics of a micro-electro-mechanical system (MEMS) are determined through simulation and Finite Element Analysis (FEA). This MEMS structure is similar to the spring structure proposed in this analysis. The result of this analysis is that a stiffness matrix can be formed based solely on the properties of the materials and the shape of the MEMS structure. Because this derivation is quite complex, it will not be included. However, the stiffness matrix will herein be referred to as $\vec{K}$ \cite{mems}
+The stiffness of this system is determined using the results derived by Wang et al. In this analysis, the characteristics of a micro-electro-mechanical system (MEMS) are determined through simulation and Finite Element Analysis (FEA). This MEMS structure is similar to the spring structure proposed in this analysis. The result of this analysis is that a stiffness matrix can be formed based solely on the properties of the materials and the shape of the MEMS structure. Because this derivation is quite complex, it will not be included. However, the stiffness matrix will herein be referred to as $\vec{K}$. \cite{mems}
 
-Because this model is only using one degree of freedom, the 
-
-The damping of this system was assumed to come only from drag. Typically, drag is a function of the square of velocity. This causes the model to be more complex due to nonlinearities. To reduce the complexity, a first order Taylor series approximation of the drag is taken. Because the drag of a system is zero when its velocity is zero, this approximation simplifies to the time derivative of drag. Also, it is assumed that the drag will act in equal magnitude in both directions. Furthermore, a scaling term $\alpha$ is included to account for any unmodeled properties of the spring that contribute to drag. The damping force used for the spring is shown below in Equation \ref{eqn:Fd}.
+Because this model is only using one degree of freedom, the effective spring constant can be extracted from $\vec{K}$ with the operation shown in Equations \ref{eqn:uK1} and \ref{eqn:uK2}. In Equation \ref{eqn:uK1}, $u$ represents a unit vector in the direction of the model's degree of freedom.
 
 \begin{equation}
-	F_d = \alpha C_d \rho A u
-\label{eqn:Fd}
+	u = \begin{bmatrix}
+	1 & 0 & 0
+	\end{bmatrix}^T 
+	\label{eqn:uK1}
+\end{equation}
+\begin{equation}
+	K_s = u^T \vec{K} u
+	\label{eqn:uK2}
 \end{equation}
 
-where $C_d$ is the coefficient of drag due to the shape of the top surface of the spring (the flat face), $\rho$ is the density of air, $A$ is the cross-sectional area of the top surface of the spring, and $u$ is the vertical velocity of the spring.
+The damping of this system was assumed to come only from drag. Typically, drag is a function of the square of velocity. This causes the model to be more complex due to nonlinearities. To reduce the complexity, a first order Taylor series approximation of the drag is taken. Because the velocity of the spring is relatively small, the reference point for this approximation is taken at a speed of zero. This approximation simplifies to the first-order time derivative of drag. Also, it is assumed that the drag will act in equal magnitude in both directions. Furthermore, a scaling term $\alpha$ is included to account for any unmodeled properties of the spring that contribute to drag. The damping coefficient used for the spring is shown below in Equation \ref{eqn:kD}.
 
-\subsection{Proposed Statistical Methods}
-% Write about monte carlo
+\begin{equation}
+	K_d = \alpha C_d \rho A
+\label{eqn:kD}
+\end{equation}
 
-In the future, uncertainty quantification will be performed on this system to quantify each of the system parameters. To do this, Markov Chain Monte Carlo (MCMC) sampling will be applied. This method is selected as it allows parameter uncertainty to be determined for all parameters. Also, MCMC will help to explore a wide range of combinations for each of the parameters. This is necessary for this model as optimizations have demonstrated a number of modes for spring parameters. These modes include springs that have: very large $r$ and $t$ values but very small $L$ values; very large $r$ and $L$ values but very small $t$ values; and balanced $r$ $L$, and $t$ values. For each of these modes, the value of $w$ is typically very small. By exploring the entire parameter space, it may be possible to find equivalent springs that are constructed in different modes, allowing for more flexibility in design.
-
-To simulate measurement noise and dimensional errors in the spring's construction, Gaussian noise will be added to each of the sample points of candidate springs used when matching the model to the ideal spring. 
+where $\rho$ is the density of air, and $A$ and $C_d$ are the cross-sectional area and coefficient of drag for the top surface of the spring, respectively.
 
 
 \section{Analysis}
@@ -157,10 +160,10 @@ To define the ideal behavior, the values $ks$, $kd$ and $m$ were defined as 200,
 
 A genetic algorithm was applied to determine the optimal set of parameters to match the model to the ideal response. The cost function used for this algorithm was the Root Sum of Squares (RSS) of the model's response and the ideal spring's response. The set of parameters to achieve this fit was found to be:
 
+
+
 \begin{equation}
-	\theta_{opt} = \begin{bmatrix}
-	0.0497  &  0.0007  &  2.97e-07 &  0.0581 & 0.0100
-\end{bmatrix}^T
+	\theta_{opt} = \input{optimizedParams.tex}
 \label{eq:ThOpt}
 \end{equation}
 
@@ -228,3 +231,10 @@ Moving forward to uncertainty quantification, this process made it clear that th
 
 
 \end{document}
+
+\subsection{Proposed Statistical Methods}
+% Write about monte carlo
+
+%In the future, uncertainty quantification will be performed on this system to quantify each of the system parameters. To do this, Markov Chain Monte Carlo (MCMC) sampling will be applied. This method is selected as it allows parameter uncertainty to be determined for all parameters. Also, MCMC will help to explore a wide range of combinations for each of the parameters. This is necessary for this model as optimizations have demonstrated a number of modes for spring parameters. These modes include springs that have: very large $r$ and $t$ values but very small $L$ values; very large $r$ and $L$ values but very small $t$ values; and balanced $r$ $L$, and $t$ values. For each of these modes, the value of $w$ is typically very small. By exploring the entire parameter space, it may be possible to find equivalent springs that are constructed in different modes, allowing for more flexibility in design.
+%
+%To simulate measurement noise and dimensional errors in the spring's construction, Gaussian noise will be added to each of the sample points of candidate springs used when matching the model to the ideal spring. 
