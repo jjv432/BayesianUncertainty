@@ -51,18 +51,15 @@ fixedPoint(4) = r;
 fixedPoint(5) = alpha;
 fixedPoint(6) = E;
 
-%% Finite Diff
-% fpSave = fixedPoint;
-% fpSave(end) = fpSave(end) / 1e9;
-% fpSave = round(fpSave, 2);
-% 
-% s = matrix2latex(fpSave);
-% s = string(s);
-% s = strrep(s, string(fpSave(end)), string(fpSave(end)) + "E9");
-% fid = fopen('Reports/optimizedParams.tex', 'w');
-% fprintf(fid, '%s', s);
-% fclose(fid);
-% runSensitivity(m, yIdeal, tIdeal, simTime, fixedPoint)
+%%
+fpSave = fixedPoint;
+fpSave(end) = fpSave(end) / 1e9;
+fpSave = round(fpSave, 2);
 
-%% Complex Step
-runSensitivityComplexStep(m, yIdeal, tIdeal, simTime, fixedPoint);
+s = matrix2latex(fpSave);
+s = string(s);
+s = strrep(s, string(fpSave(end)), string(fpSave(end)) + "E9");
+fid = fopen('Reports/optimizedParams.tex', 'w');
+fprintf(fid, '%s', s);
+fclose(fid);
+runSensitivity(m, yIdeal, tIdeal, simTime, fixedPoint)
