@@ -22,7 +22,7 @@ classdef newSpring < handle
     end
 
     methods
-        function obj = newSpring(L, t, w, r, m, alpha)
+        function obj = newSpring(L, t, w, r, m, alpha, E)
             %UNTITLED Construct an instance of this class
             %   Detailed explanation goes here
             obj.L_ = L;
@@ -31,6 +31,7 @@ classdef newSpring < handle
             obj.r_ = r;
             obj.m_ = m;
             obj.alpha_ = alpha;
+            obj.E_ = E;
             obj.makeComplianceMatrix();
         end
 

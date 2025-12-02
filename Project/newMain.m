@@ -15,7 +15,7 @@ idealKD = 2;
 
 [yIdeal, tIdeal] = getResponseIdeal(idealKS, idealKD, m, simTime);
 
-%% Testing runOptimization.m
+%% Optimize the Parameters
 
 % run the optimization
 optimizedSpring = runOptimization(m, simTime, yIdeal, tIdeal);
@@ -24,26 +24,29 @@ hold off;
 % animate the behavior of the ideal spring
 [y, t] = optimizedSpring.getResponse(simTime);
 
-figure;
-for i = 1:10:numel(y)
-    cla;
-    optimizedSpring.inverseKinematics(y(i));
-    optimizedSpring.fillCoords;
-    drawnow;
+% figure;
+% for i = 1:10:numel(y)
+%     cla;
+%     optimizedSpring.inverseKinematics(y(i));
+%     optimizedSpring.fillCoords;
+%     drawnow;
+% 
+% end
 
-end
-
-%% Testing runSensitivity.m
+%% Determine the Sensitivity of the Parameters
 % L, t, w, r, (m), alpha
 L = optimizedSpring.L_;
 t = optimizedSpring.t_;
 w = optimizedSpring.w_;
 r = optimizedSpring.r_;
 alpha = optimizedSpring.alpha_;
+E = optimizedSpring.E_;
 
 fixedPoint(1) = L;
 fixedPoint(2) = t;
 fixedPoint(3) = w;
 fixedPoint(4) = r;
 fixedPoint(5) = alpha;
+fixedPoint(6) = E;
+
 runSensitivity(m, yIdeal, tIdeal, simTime, fixedPoint)

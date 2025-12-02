@@ -1,12 +1,11 @@
 function runSensitivity(mass, yIdeal, tIdeal, simTime, fixedPoint)
 
-    %% Begin Finite Diff
+    %** Begin Finite Diff
 
-    delta = .0005;
+    delta = .00005;
     numTestPoints = 300; % MUST BE EVEN
 
     % Each row is a param, each column is a test point
-    % ! Shoudl really be numTP - 1 b/c th_i duplicated
     Costs = zeros(numel(fixedPoint), numTestPoints -1);
     testPointMatrix = [];
 
@@ -17,8 +16,11 @@ function runSensitivity(mass, yIdeal, tIdeal, simTime, fixedPoint)
         min = th_i - delta*th_i;
         max = th_i + delta*th_i;
 
-        th_i_plus = linspace(th_i, max, numTestPoints/2);
-        th_i_minus = linspace(min, th_i, numTestPoints/2);
+        th_i_minus = linspace(min, th_i, numTestPoints/2 + 1);
+        tmp = th_i_minus(2) - th_i_minus(1);
+
+        th_i_plus = linspace(th_i, max, numTestPoints/2 +1);
+        
 
         testPoints = [th_i_minus, th_i_plus(2:end)];
         testPoints(testPoints <=0) = 1e-12;
@@ -34,18 +36,34 @@ function runSensitivity(mass, yIdeal, tIdeal, simTime, fixedPoint)
 
     end
 
-    S = zeros(numel(fixedPoint), numTestPoints -2);
-    for k = 1:(numTestPoints -2)
-        S(:, k) = (Costs(:, k+1) - Costs(:, k)) / delta;
-    end
+    %** Find sensitivities using the finit diff matrix
+    % Find scaling factor
+    y0 = ModelSimulationCost(fixedPoint, yIdeal);
+    scaler = fixedPoint/y0;
 
-    paramNames = {'L', 't', 'w', 'r', "\alpha"};
+    S = zeros(numel(fixedPoint), numTestPoints + 1);
+
+    for k = 1:numel(fixedPoint)
+        rMSE = (Costs(k,:) - y0) / y0;
+        S(k, :) = rMSE / delta;
+    end
+    % for k = 1:(numTestPoints)
+    %     S(:, k) = (Costs(:, k+1) - Costs(:, k)) / delta;
+    % end
+    % 
+    % for j = 1:numel(fixedPoint)
+    %     S(j, :) = S(j, :) * scaler(j);
+    % end
+
+
+    %** Plot sensitivities
+    paramNames = ['L', 't', 'w', 'r', "\alpha", 'E'];
     figure('WindowState','maximized')
     for a = 1:numel(fixedPoint)
         subplot(3, 2, a);
-        plot(testPointMatrix(a, 2:end), S(a, :), 'k', "LineWidth", 3)
+        plot((testPointMatrix(a, :) - fixedPoint(a))/fixedPoint(a), S(a, :), 'k', "LineWidth", 3)
         ylabel("S (\theta_" + string(a) + ")", 'fontweight', 'bold');
-        xlabel(paramNames(a), 'fontweight', 'bold');
+        xlabel('%\Delta' + paramNames(a), 'fontweight', 'bold');
         grid on
         ax = gca; % Get the current axes object
         ax.FontSize = 14;
@@ -56,7 +74,7 @@ function runSensitivity(mass, yIdeal, tIdeal, simTime, fixedPoint)
     %% Cost Function
 
     function Cost = ModelSimulationCost(fp, yIdeal)
-        s = newSpring(fp(1), fp(2), fp(3), fp(4), mass, fp(5));
+        s = newSpring(fp(1), fp(2), fp(3), fp(4), mass, fp(5), fp(6));
 
         y = s.getResponse(simTime);
 

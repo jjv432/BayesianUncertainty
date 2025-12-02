@@ -3,11 +3,11 @@ function os = runOptimization(mass, simTime, yIdeal, tIdeal)
     %% Setting up GA
 
     % lower and upper bounds for each variable
-    % L, t, w, r, (m), alpha
+    % L, t, w, r, (m), alpha, E
     
     
-    LB= [0, 0, 0, 0, 0] + 1e-3;
-    UB= [0.5, 0.5, 0.5, 0.5, 10];
+    LB= [0, 0, 0, 0, 0, 5e8] + 1e-3;
+    UB= [0.5, 0.5, 0.5, 0.5, 10, 1e10];
 
     nvars = numel(LB);
 
@@ -19,7 +19,7 @@ function os = runOptimization(mass, simTime, yIdeal, tIdeal)
     costFunctionHandle = @(freeParams) ModelSimulationCost(freeParams, yIdeal);
 
     function Cost = ModelSimulationCost(fp, yIdeal)
-        s = newSpring(fp(1), fp(2), fp(3), fp(4), mass, fp(5));
+        s = newSpring(fp(1), fp(2), fp(3), fp(4), mass, fp(5), fp(6));
 
         y = s.getResponse(simTime);
 
@@ -36,7 +36,7 @@ function os = runOptimization(mass, simTime, yIdeal, tIdeal)
     op = ga(costFunctionHandle, nvars, A, b, Aeq, beq, LB, UB, nonlcon, options);
 
     %% Create the optimal spring
-    os = newSpring(op(1), op(2), op(3), op(4), mass, op(5));
+    os = newSpring(op(1), op(2), op(3), op(4), mass, op(5), op(6));
 
     [yOptimized, t_out] = os.getResponse(simTime);
 
