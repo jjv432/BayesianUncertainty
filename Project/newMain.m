@@ -51,6 +51,10 @@ fixedPoint(4) = r;
 fixedPoint(5) = alpha;
 fixedPoint(6) = E;
 
+%% Complex Step
+runSensitivityComplexStep(m, yIdeal, tIdeal, simTime, fixedPoint);
+
+
 %% Finite Diff
 % fpSave = fixedPoint;
 % fpSave(end) = fpSave(end) / 1e9;
@@ -63,6 +67,3 @@ fixedPoint(6) = E;
 % fprintf(fid, '%s', s);
 % fclose(fid);
 % runSensitivity(m, yIdeal, tIdeal, simTime, fixedPoint)
-
-%% Complex Step
-runSensitivityComplexStep(m, yIdeal, tIdeal, simTime, fixedPoint);
