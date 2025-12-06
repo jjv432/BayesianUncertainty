@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.9.10)  1 DEC 2025 22:17
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.9.10)  6 DEC 2025 15:45
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -598,14 +598,7 @@ Package caption Info: New subtype `subtable' on input line 238.
 LaTeX Warning: Unused global option(s):
     [conference].
 
-(FinalReport.aux
-
-LaTeX Warning: Label `fig:SpringCompressed' multiply defined.
-
-
-LaTeX Warning: Label `sub@fig:SpringCompressed' multiply defined.
-
-)
+(FinalReport.aux)
 \openout1 = `FinalReport.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 21.
@@ -732,90 +725,199 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 22.
 d
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-<AnnotatedGraphic.jpg, id=1, 963.6pt x 542.025pt>
-File: AnnotatedGraphic.jpg Graphic file (type jpg)
-<use AnnotatedGraphic.jpg>
-Package pdftex.def Info: AnnotatedGraphic.jpg  used on input line 65.
-(pdftex.def)             Requested size: 252.94499pt x 142.27956pt.
-<CompressedSpring.jpg, id=2, 465.99094pt x 252.945pt>
-File: CompressedSpring.jpg Graphic file (type jpg)
-<use CompressedSpring.jpg>
-Package pdftex.def Info: CompressedSpring.jpg  used on input line 72.
-(pdftex.def)             Requested size: 252.94499pt x 137.30229pt.
-
-Overfull \hbox (4.44441pt too wide) in paragraph at lines 63--76
- [][]  [] 
- []
-
-
 
 [1
 
 {C:/Users/Jack Vranicar/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}]
 
+LaTeX Warning: Reference `fig:SpringAnnotated' on page 2 undefined on input lin
+e 53.
+
+
+LaTeX Warning: Reference `fig:SpringAnnotated' on page 2 undefined on input lin
+e 53.
+
+
+LaTeX Warning: Reference `eqn:kD' on page 2 undefined on input line 53.
+
+<AnnotatedGraphic.jpg, id=8, 963.6pt x 542.025pt>
+File: AnnotatedGraphic.jpg Graphic file (type jpg)
+<use AnnotatedGraphic.jpg>
+Package pdftex.def Info: AnnotatedGraphic.jpg  used on input line 71.
+(pdftex.def)             Requested size: 252.94499pt x 142.27956pt.
+<CompressedSpring.jpg, id=9, 465.99094pt x 252.945pt>
+File: CompressedSpring.jpg Graphic file (type jpg)
+<use CompressedSpring.jpg>
+Package pdftex.def Info: CompressedSpring.jpg  used on input line 78.
+(pdftex.def)             Requested size: 252.94499pt x 137.30229pt.
+
+Overfull \hbox (4.44441pt too wide) in paragraph at lines 69--82
+ [][]  [] 
+ []
+
+
+LaTeX Warning: Reference `eqn:uK1' on page 2 undefined on input line 93.
+
+
+LaTeX Warning: Reference `eqn:uK2' on page 2 undefined on input line 93.
+
+
+LaTeX Warning: Reference `eqn:uK1' on page 2 undefined on input line 93.
+
+
+
 [2 <./AnnotatedGraphic.jpg> <./CompressedSpring.jpg>]
-Underfull \hbox (badness 10000) in paragraph at lines 123--124
+
+LaTeX Warning: Reference `eqn:kD' on page 3 undefined on input line 106.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 129--130
 
  []
 
+
+LaTeX Warning: Reference `fig:IdealResponse' on page 3 undefined on input line 
+162.
+
 (optimizedParams.tex)
-<IdealSpringResponse.jpg, id=17, 878.28125pt x 658.46pt>
+<IdealSpringResponse.jpg, id=18, 878.28125pt x 658.46pt>
 File: IdealSpringResponse.jpg Graphic file (type jpg)
 <use IdealSpringResponse.jpg>
-Package pdftex.def Info: IdealSpringResponse.jpg  used on input line 174.
+Package pdftex.def Info: IdealSpringResponse.jpg  used on input line 180.
 (pdftex.def)             Requested size: 252.94499pt x 189.63231pt.
-<RealAndIdealSpringResponse.jpg, id=18, 878.28125pt x 658.46pt>
+<RealAndIdealSpringResponse.jpg, id=19, 878.28125pt x 658.46pt>
 File: RealAndIdealSpringResponse.jpg Graphic file (type jpg)
 <use RealAndIdealSpringResponse.jpg>
-Package pdftex.def Info: RealAndIdealSpringResponse.jpg  used on input line 181
+Package pdftex.def Info: RealAndIdealSpringResponse.jpg  used on input line 187
 .
 (pdftex.def)             Requested size: 252.94499pt x 189.63231pt.
 
-Overfull \hbox (4.44441pt too wide) in paragraph at lines 172--185
+Overfull \hbox (4.44441pt too wide) in paragraph at lines 178--191
  [][]  [] 
  []
 
 
 
-[3 <./IdealSpringResponse.jpg> <./RealAndIdealSpringResponse.jpg>]
+[3]
+
+LaTeX Warning: Reference `eq:ThOpt' on page 4 undefined on input line 196.
+
+
+LaTeX Warning: Reference `fig:LocalSens' on page 4 undefined on input line 202.
+
+
 <LocalSens.jpg, id=24, 2007.5pt x 939.51pt>
 File: LocalSens.jpg Graphic file (type jpg)
 <use LocalSens.jpg>
-Package pdftex.def Info: LocalSens.jpg  used on input line 200.
+Package pdftex.def Info: LocalSens.jpg  used on input line 206.
 (pdftex.def)             Requested size: 404.71353pt x 189.40392pt.
-<Reduced_RealAndIdealSpringResponse.jpg, id=25, 878.28125pt x 658.46pt>
+
+
+[4 <./IdealSpringResponse.jpg> <./RealAndIdealSpringResponse.jpg>]
+
+LaTeX Warning: Reference `fig:LocalSens' on page 5 undefined on input line 211.
+
+
+
+LaTeX Warning: Reference `eqn:OGParms' on page 5 undefined on input line 211.
+
+
+LaTeX Warning: Reference `sec:GA' on page 5 undefined on input line 221.
+
+
+LaTeX Warning: Reference `fig:OptFit' on page 5 undefined on input line 221.
+
+<Reduced_RealAndIdealSpringResponse.jpg, id=28, 878.28125pt x 658.46pt>
 File: Reduced_RealAndIdealSpringResponse.jpg Graphic file (type jpg)
 <use Reduced_RealAndIdealSpringResponse.jpg>
 Package pdftex.def Info: Reduced_RealAndIdealSpringResponse.jpg  used on input 
-line 219.
+line 225.
+(pdftex.def)             Requested size: 379.4175pt x 284.45853pt.
+<FullParamSetInitialGuess.jpg, id=29, 878.28125pt x 658.46pt>
+File: FullParamSetInitialGuess.jpg Graphic file (type jpg)
+<use FullParamSetInitialGuess.jpg>
+Package pdftex.def Info: FullParamSetInitialGuess.jpg  used on input line 239.
 (pdftex.def)             Requested size: 379.4175pt x 284.45853pt.
 
 
-[4 <./LocalSens.jpg>]
+[5 <./LocalSens.jpg> <./Reduced_RealAndIdealSpringResponse.jpg>]
+<FullParamSetChains.jpg, id=34, 2007.5pt x 939.51pt>
+File: FullParamSetChains.jpg Graphic file (type jpg)
+<use FullParamSetChains.jpg>
+Package pdftex.def Info: FullParamSetChains.jpg  used on input line 246.
+(pdftex.def)             Requested size: 379.4175pt x 177.56259pt.
+<FullParamSetChainPanel.jpg, id=35, 878.28125pt x 658.46pt>
+File: FullParamSetChainPanel.jpg Graphic file (type jpg)
+<use FullParamSetChainPanel.jpg>
+Package pdftex.def Info: FullParamSetChainPanel.jpg  used on input line 253.
+(pdftex.def)             Requested size: 379.4175pt x 284.45853pt.
 
-[5 <./Reduced_RealAndIdealSpringResponse.jpg>]
 
-[6] (FinalReport.aux)
+[6 <./FullParamSetInitialGuess.jpg> <./FullParamSetChains.jpg>]
+<FullParamSetPairs.jpg, id=39, 878.28125pt x 658.46pt>
+File: FullParamSetPairs.jpg Graphic file (type jpg)
+<use FullParamSetPairs.jpg>
+Package pdftex.def Info: FullParamSetPairs.jpg  used on input line 260.
+(pdftex.def)             Requested size: 379.4175pt x 284.45853pt.
+<RedParamSetInitialGuess.jpg, id=40, 878.28125pt x 658.46pt>
+File: RedParamSetInitialGuess.jpg Graphic file (type jpg)
+<use RedParamSetInitialGuess.jpg>
+Package pdftex.def Info: RedParamSetInitialGuess.jpg  used on input line 268.
+(pdftex.def)             Requested size: 379.4175pt x 284.45853pt.
+
+
+[7 <./FullParamSetChainPanel.jpg> <./FullParamSetPairs.jpg>]
+<RedParamSetChains.jpg, id=45, 2007.5pt x 939.51pt>
+File: RedParamSetChains.jpg Graphic file (type jpg)
+<use RedParamSetChains.jpg>
+Package pdftex.def Info: RedParamSetChains.jpg  used on input line 275.
+(pdftex.def)             Requested size: 379.4175pt x 177.56259pt.
+<RedParamSetChainPanel.jpg, id=46, 878.28125pt x 658.46pt>
+File: RedParamSetChainPanel.jpg Graphic file (type jpg)
+<use RedParamSetChainPanel.jpg>
+Package pdftex.def Info: RedParamSetChainPanel.jpg  used on input line 282.
+(pdftex.def)             Requested size: 379.4175pt x 284.45853pt.
+
+
+[8 <./RedParamSetInitialGuess.jpg> <./RedParamSetChains.jpg>]
+<RedParamSetPairs.jpg, id=50, 878.28125pt x 658.46pt>
+File: RedParamSetPairs.jpg Graphic file (type jpg)
+<use RedParamSetPairs.jpg>
+Package pdftex.def Info: RedParamSetPairs.jpg  used on input line 289.
+(pdftex.def)             Requested size: 379.4175pt x 284.45853pt.
+
+
+[9 <./RedParamSetChainPanel.jpg> <./RedParamSetPairs.jpg>]
+
+[10] (FinalReport.aux)
  ***********
 LaTeX2e <2025-06-01> patch level 1
 L3 programming layer <2025-08-13>
  ***********
 
 
-LaTeX Warning: There were multiply-defined labels.
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package biblatex Warning: Please (re)run Biber on the file:
+(biblatex)                FinalReport
+(biblatex)                and rerun LaTeX afterwards.
 
 Package logreq Info: Writing requests to 'FinalReport.run.xml'.
 \openout1 = `FinalReport.run.xml'.
 
  ) 
 Here is how much of TeX's memory you used:
- 14412 strings out of 468133
- 266242 string characters out of 5426804
- 1102163 words of memory out of 5000000
- 42865 multiletter control sequences out of 15000+600000
+ 14468 strings out of 468133
+ 267956 string characters out of 5426804
+ 1102584 words of memory out of 5000000
+ 42921 multiletter control sequences out of 15000+600000
  635640 words of font info for 74 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 68i,8n,77p,884b,1211s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 68i,8n,77p,1096b,1209s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/Jack Vranicar/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
 onts/cm/cmbx10.pfb><C:/Users/Jack Vranicar/AppData/Local/Programs/MiKTeX/fonts/
 type1/public/amsfonts/cm/cmbx12.pfb><C:/Users/Jack Vranicar/AppData/Local/Progr
@@ -830,9 +932,9 @@ ppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/
 Jack Vranicar/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy
 10.pfb><C:/Users/Jack Vranicar/AppData/Local/Programs/MiKTeX/fonts/type1/public
 /amsfonts/cm/cmti10.pfb>
-Output written on FinalReport.pdf (6 pages, 620806 bytes).
+Output written on FinalReport.pdf (10 pages, 1416818 bytes).
 PDF statistics:
- 82 PDF objects out of 1000 (max. 8388607)
+ 104 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
- 31 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 71 words of extra memory for PDF output out of 10000 (max. 10000000)
 

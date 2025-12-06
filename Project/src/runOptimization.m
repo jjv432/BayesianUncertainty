@@ -1,13 +1,16 @@
-function os = runOptimization(mass, simTime, yIdeal, tIdeal)
+function [os, handle] = runOptimization(mass, simTime, yIdeal, tIdeal, paramsToVary)
 
     %% Setting up GA
 
     % lower and upper bounds for each variable
     % L, t, w, r, (m), alpha, E
-    
-    
-    LB= [0, 0, 0, 0, 0, 5e8] + 1e-3;
-    UB= [0.5, 0.5, 0.5, 0.5, 10, 1e10];
+
+
+    possibleLB= [0, 0, 0, 0, 0, 5e8] + 1e-3;
+    possibleUB= [0.5, 0.5, 0.5, 0.5, 10, 1e10];
+
+    LB = possibleLB(paramsToVary);
+    UB = possibleUB(paramsToVary);
 
     nvars = numel(LB);
 
@@ -15,11 +18,27 @@ function os = runOptimization(mass, simTime, yIdeal, tIdeal)
 
     options = optimoptions('ga', 'PopulationSize', numparticles, 'MaxGenerations', 400);
 
+    possibleStates = 1:6;
+    constantState = ismember(possibleStates, paramsToVary);
+    constants(1:6) = [100, 10, 100, 10, 100, 10];
+
+
     % Cost function handle
     costFunctionHandle = @(freeParams) ModelSimulationCost(freeParams, yIdeal);
 
     function Cost = ModelSimulationCost(fp, yIdeal)
-        s = newSpring(fp(1), fp(2), fp(3), fp(4), mass, fp(5), fp(6));
+        p = [];
+        ctr = 1;
+        for i = possibleStates(1):possibleStates(end)
+            if (constantState(i) == 0)
+                p(i) = constants(i);
+            else
+                p(i) = fp(ctr);
+                ctr = ctr +1;
+            end
+        end
+
+        s = newSpring(p(1), p(2), p(3), p(4), mass, p(5), p(6));
 
         y = s.getResponse(simTime);
 
@@ -36,7 +55,18 @@ function os = runOptimization(mass, simTime, yIdeal, tIdeal)
     op = ga(costFunctionHandle, nvars, A, b, Aeq, beq, LB, UB, nonlcon, options);
 
     %% Create the optimal spring
-    os = newSpring(op(1), op(2), op(3), op(4), mass, op(5), op(6));
+    ctr = 1;
+    opt = [];
+    for i = possibleStates(1):possibleStates(end)
+        if (constantState(i) == 0)
+            opt(i) = constants(i);
+        else
+            opt(i) = op(ctr);
+            ctr = ctr +1;
+        end
+    end
+
+    os = newSpring(opt(1), opt(2), opt(3), opt(4), mass, opt(5), opt(6));
 
     [yOptimized, t_out] = os.getResponse(simTime);
 
@@ -50,7 +80,7 @@ function os = runOptimization(mass, simTime, yIdeal, tIdeal)
     ylabel("Spring Height (m)");
     title("Real and Ideal Spring Response");
     grid on
-    % saveas(gcf, "/Reports/Reduced_RealAndIdealSpringResponse.jpg");
     hold off
 
+    handle = gcf;
 end

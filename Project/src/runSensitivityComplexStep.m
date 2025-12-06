@@ -1,12 +1,12 @@
-function S = runSensitivityComplexStep(mass, yIdeal, tIdeal, simTime, fixedPoint)
+function [S, handle] = runSensitivityComplexStep(mass, yIdeal, tIdeal, simTime, fixedPoint, set)
 
     h = 1e-12;
     testPointMatrix = [];
     S = [];
     del = 0.05;
-    numSamples = 1e5;
+    numSamples = 1e4;
 
-    for i = 1:numel(fixedPoint) % every parameter
+    for i = set % every free parameter
         minStep = fixedPoint(i)*(1-del);
         maxStep = fixedPoint(i)*(1+del);
         samples = linspace(minStep, maxStep, numSamples);
@@ -21,19 +21,20 @@ function S = runSensitivityComplexStep(mass, yIdeal, tIdeal, simTime, fixedPoint
     end
 
     %** Scaling
-    % y0 = ModelSimulationCost(fixedPoint, yIdeal) + 1e-12;
-    % p0 = fixedPoint;
-    % scaler = p0/y0;
-    % 
-    % for k = 1:numel(fixedPoint)
-    %     S(k, :) = S(k, :) * scaler(k);
-    % end
+    p0 = fixedPoint;
+    scaler = p0/1;
+
+    for k = 1:set
+        S(k, :) = S(k, :) * scaler(k);
+    end
 
 
     %** Plot sensitivities
-    paramNames = ['L', 't', 'w', 'r', "\alpha", 'E'];
+    possibleParamNames = ['L', 't', 'w', 'r', "\alpha", 'E'];
+    paramNames = possibleParamNames(set);
+
     figure('WindowState','maximized')
-    for a = 1:numel(fixedPoint)
+    for a = set
         subplot(3, 2, a);
         plot((testPointMatrix(a, :) - fixedPoint(a))/fixedPoint(a), S(a, :), 'k', "LineWidth", 3)
         ylabel("S (\theta_" + string(a) + ")", 'fontweight', 'bold');
@@ -42,6 +43,7 @@ function S = runSensitivityComplexStep(mass, yIdeal, tIdeal, simTime, fixedPoint
         ax = gca; % Get the current axes object
         ax.FontSize = 14;
     end
+    handle = gcf;
     % sgtitle('Local Sensitivities');
     % saveas(gcf, "Reports/LocalSens.jpg");
 

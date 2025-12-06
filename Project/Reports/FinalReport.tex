@@ -13,7 +13,7 @@
 \addbibresource{references.bib}
 
 \title{\LARGE \bf
-White Paper
+Final Report
 }
 \author{
     Jack Vranicar
@@ -25,22 +25,28 @@ White Paper
 \pagestyle{empty}
 
 \section{Abstract}
-%When designing dynamic systems, it is often necessary to employ the use of springs. These springs are used to reduce the impact that disturbances on the system may cause, store energy, or ensure mechanical certainty (e.g. a push button has a spring to ensure that it does not get stuck in an intermediate state). To ensure the proper system response, the designer will have to carefully select system parameters. These parameters include spring stiffness, damping, and the mass of the system. By tuning these parameters, the system's response to outside forces will be predictable and will follow the desired behavior. 
 
 Typically, when selecting a spring, one can know with relative certainty what the spring constant will be. This is because the spring coefficient for certain spring designs and materials is well studied and characterized. However, if it is desirable to create an assembly solely with 3D printed parts, one will have difficulty applying these formulas. This is because it is difficult to reliably print a helical pattern with typical consumer grade 3D printers. To address this, an 'S' shaped spring model is introduced, and its response characterized. Sensitivity analysis is performed on this model to reduce the parameter set, and the results compared against a reference spring.
 \section{Motivation}
 % Describe the project to a layperson and include the statistaical mehtods you plan to use. Be clear on what params will be considered random params for UQ. This set may be reduced based on sensitivity analysis
 
-\subsection{Background}
+\subsection{Mechanical Background}
 
 For Mechanical Engineers, there are a number of considerations that must be made when designing a system, especially if it is a dynamic system. These dynamic systems have moving components and are subject to numerous external forces. To react to these external forces, there are a couple of schemes that are typically used. The first is passive control. This refers to a system that can react to disturbances appropriately, simply by virtue of its compliance and damping. There is also active control, which includes using actuators and sensors to effect the desired system response. Often, passive and active control schemes are used together to reap the benefits of both schemes. For the purposes of this analysis, only passive systems will be discussed.
-
-%Consider a car as an example. As the car drives down the road, the driver might brake, accelerate, corner, go up a hill, etc. The designers must carefully consider how the car will react to each of these actions, namely by changing suspension characteristics. A suspension, in its simplest form, is a spring and damper in parallel with each other. The spring resists changes in position, and the damper resists changes in velocity. By carefully tuning the spring's stiffness and damper's damping coefficient, the designers can create the desired effect: 'go-kart' like handling for sports cars, and comfortable, stable rides for minivans.
 
 When engineers are designing systems, it is typical to go through a number of iterations. This process helps make small changes to designs, compare iterations to each other and ending up with the best product. It is becoming increasingly popular to create these prototypes out of 3D printed materials as they allow for cheap, fast, and in-house manufacturing of all components. However, this approach is typically limited to static applications- parts that fasten to each other or do not require precise passive control considerations. One usually does not 3D print precise compliant parts due to the complexity of characterizing the spring's coefficients.  This can prove to be a serious limitation in a few cases, including a scale-model of a passively controlled system, or a passively controlled system that is intended to remain 3D printed. 
 
 If a 3D printed spring could be precisely characterized, a number of benefits would become available to designers. The flexibility that printing one's own springs opens a wide variety of designs previously impossible with traditional methods. This can lead to innovative, novel solutions which can compensate for limitations of other designs. For this reason, the goal of this analysis is to determine a model which can reliably determine the spring constant and damping coefficient of a 3D printed spring.
 
+\subsection{Statistical Background}
+
+In order for a model to be useful, the parameters of the model must be identified. There are two strategies used to determine these parameters: frequentist and Bayesian approaches. Bayesian methods for parameter determination will be used in this discussion.
+
+The Bayesian approach requires that one treats each parameter as a random variable, as opposed to the frequentist approach of treating each parameter as a fixed variable. This randomness is useful as it can account for uncertainties in production, such as measurement and manufacturing errors. Each of the parameters can then be defined as a Gaussian distribution with the mean value being the expected value of the error, and the variance representing the errors expected in producing the parameter. This is valuable for engineers as it allows for a better understanding of how these errors interact with each other and how confident they can be in the model prediction. 
+
+However, it is not necessary or even desirable to treat every parameter of a system as if it is random. The first reason to fix a model parameter is if its value is known with high certainty. These could be the results of measurements with high-precision measurement tools. Another reason deals with identifiability. If a parameter is identifiable, that means that the Bayesian inference can be used to determine an expected value. However, in cases when parameters are unidentifiable, the inference cannot yield a conclusion on the expected value of the parameter. This typically happens when two or more parameters are a function of each other. This is because MCMC assumes that each of the parameters are independent and identically distributed (i.i.d.). If one parameter depends on the value of others, it is no longer i.i.d. Finally, fixing a parameter reduces the complexity of the modeling. Because the value for the parameter does not need to be sampled out of random distribution each time a point is evaluated, the MCMC requires less compute time. 
+
+Two methods were used to determine which model parameters should be considered fixed: sensitivity analysis and MCMC. Sensitivity analysis is the process of quantifying how much a change in an input parameter changes the output parameters of the system. If a parameter is insensitive, it means that changing its value has little or no effect on the model's behavior. This is a means of determining that a parameter is unidentifiable as there is not definitive way of relating the parameter to the output of the system. % reference sensitivity analysis.
 
 \subsection{Model Description}
 
@@ -221,11 +227,74 @@ Starting at the fixed point, each model parameter was perturbed using finite dif
     \label{fig:OptFit}
  \end{figure}
  
-\section{Discussion}
-% Describe what you learned and your plans to apply Bayesian uncertainty quantification to the random params in the model
-During this process, it became evident that the implementation of new constraints will be necessary for this model to be useful for real 3D printed parts. This will prevent dimensions that are too small for a consumer grade 3D-printer to achieve. Furthermore, when animating the system response, it became clear that some springs were allowed to pass through themselves, clearly violating the laws of physics. For this reason, non-linear constraints must be incorporated to assign a large cost to springs that pass through themselves. Furthermore, it will be necessary to more carefully craft the ideal spring response to avoid creating conditions in which the spring will be forced to pass through itself.  Future work will include addressing these concerns.
+\section{Uncertainty Quantification}
+% Four plots. Make sure theta is defined
 
-Moving forward to uncertainty quantification, this process made it clear that the parameter set can be reduced to four parameter instead of five. This will prove to be useful in limiting the computational demand and make drawing conclusions about the system easier. Also, the parameter set can be reduced even further by fixing a value for the thickness $t$, and defining the other parameters some factor of this value. This will hopefully solve the current issue of optimal values for `t' solving to be smaller than possible with 3D prints.
+Uncertainty quantification for each of the parameters in the full set and the reduced set was conducted using MCMC methods. 
+
+% Full Set
+
+ \begin{figure}[H]
+    \centering
+    \includegraphics[width=.75  \linewidth]{FullParamSetInitialGuess.jpg}
+    \caption{Model Fitting with $\theta_{RED}$}
+    \label{fig:OptFit}
+ \end{figure}
+ 
+ \begin{figure}[H]
+    \centering
+    \includegraphics[width=.75  \linewidth]{FullParamSetChains.jpg}
+    \caption{Model Fitting with $\theta_{RED}$}
+    \label{fig:OptFit}
+ \end{figure}
+ 
+ \begin{figure}[H]
+    \centering
+    \includegraphics[width=.75  \linewidth]{FullParamSetChainPanel.jpg}
+    \caption{Model Fitting with $\theta_{RED}$}
+    \label{fig:OptFit}
+ \end{figure}
+ 
+ \begin{figure}[H]
+    \centering
+    \includegraphics[width=.75  \linewidth]{FullParamSetPairs.jpg}
+    \caption{Model Fitting with $\theta_{RED}$}
+    \label{fig:OptFit}
+ \end{figure}
+
+% Reduced set
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=.75  \linewidth]{RedParamSetInitialGuess.jpg}
+    \caption{Model Fitting with $\theta_{RED}$}
+    \label{fig:OptFit}
+ \end{figure}
+ 
+ \begin{figure}[H]
+    \centering
+    \includegraphics[width=.75  \linewidth]{RedParamSetChains.jpg}
+    \caption{Model Fitting with $\theta_{RED}$}
+    \label{fig:OptFit}
+ \end{figure}
+ 
+ \begin{figure}[H]
+    \centering
+    \includegraphics[width=.75  \linewidth]{RedParamSetChainPanel.jpg}
+    \caption{Model Fitting with $\theta_{RED}$}
+    \label{fig:OptFit}
+ \end{figure}
+ 
+ \begin{figure}[H]
+    \centering
+    \includegraphics[width=.75  \linewidth]{RedParamSetPairs.jpg}
+    \caption{Model Fitting with $\theta_{RED}$}
+    \label{fig:OptFit}
+ \end{figure}
+
+
+\section{Concluding Remarks}
+% Key findings. How did parameters affect QoI?
+
 \newpage
 \printbibliography
 
