@@ -81,6 +81,7 @@ function [os, handle] = runOptimization(mass, simTime, yIdeal, tIdeal, paramsToV
     title("Real and Ideal Spring Response");
     grid on
     hold off
+    legend();
     handle.h1 = gcf;
 
     figure;

@@ -39,7 +39,13 @@ function [handles] = runUQ(data, initVals, initNames, mass, yIdeal, paramsToVary
     constants(1:6) = initVals; %[0.41, 6e-3, .49, .3, 7.7, 9e9];
 
 
+    idx = possibleStates;
+    varMask = constantState(idx) ~=
     function Cost = ModelSimulationCost(fp, data)
+        persistent s
+        if isempty(s)
+            s = newSpring(
+
         p = [];
         ctr = 1;
         for i = possibleStates(1):possibleStates(end)
@@ -125,7 +131,7 @@ function [handles] = runUQ(data, initVals, initNames, mass, yIdeal, paramsToVary
     plot(data.xdata,data.ydata,'.','linewidth',1)
     hold off
     xlabel('t (s)','Fontsize',24);
-    ylabel('y (mm)','Fontsize',24);
+    ylabel('\delta (mm)','Fontsize',24);
     legend('95% Prediction Interval','95% Credible Interval','Model Fit','Simulated Data','Location','Best')
     handles.h5 = gcf;
 

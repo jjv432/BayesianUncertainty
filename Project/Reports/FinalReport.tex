@@ -42,15 +42,15 @@ If a 3D printed spring could be precisely characterized, a number of benefits wo
 
 In order for a model to be useful, the parameters of the model must be identified. There are two strategies used to determine these parameters: frequentist and Bayesian approaches. Bayesian methods for parameter determination will be used in this discussion.
 
-The Bayesian approach requires that one treats each parameter as a random variable, as opposed to the frequentist approach of treating each parameter as a fixed variable. This randomness is useful as it can account for uncertainties in production, such as measurement and manufacturing errors. Each of the parameters can then be defined as a Gaussian distribution with the mean value being the expected value of the error, and the variance representing the errors expected in producing the parameter. This is valuable for engineers as it allows for a better understanding of how these errors interact with each other and how confident they can be in the model prediction. 
+The Bayesian approach requires that one treats each parameter as a random variable, as opposed to the frequentist approach of treating each parameter as a fixed variable. This randomness is useful as it can account for uncertainties in production, such as measurement and manufacturing errors. Each of the parameters can then be defined as a Gaussian distribution with the mean value being the expected value of the parameter, and the variance representing the errors expected in producing the parameter. This is valuable for engineers as it allows for a better understanding of how these errors interact with each other and how confident they can be in the model prediction. 
 
-However, it is not necessary or even desirable to treat every parameter of a system as if it is random. The first reason to fix a model parameter is if its value is known with high certainty. These could be the results of measurements with high-precision measurement tools. Another reason deals with identifiability. If a parameter is identifiable, that means that the Bayesian inference can be used to determine an expected value. However, in cases when parameters are unidentifiable, the inference cannot yield a conclusion on the expected value of the parameter. This typically happens when two or more parameters are a function of each other. This is because MCMC assumes that each of the parameters are independent and identically distributed (i.i.d.). If one parameter depends on the value of others, it is no longer i.i.d. Finally, fixing a parameter reduces the complexity of the modeling. Because the value for the parameter does not need to be sampled out of random distribution each time a point is evaluated, the MCMC requires less compute time. 
+However, it is not necessary or even desirable to treat every parameter of a system as if it is random. The first reason to fix a model parameter is if its value is known with high certainty. These could be the results of measurements with high-precision measurement tools. Another reason deals with identifiability. If a parameter is identifiable, that means that the Bayesian inference can be used to determine an expected value. However, in cases when parameters are unidentifiable, the inference cannot yield a conclusion on the expected value of the parameter. This typically happens when two or more parameters are a function of each other. This is because the Markov Chain Monte Carlo (MCMC) method used in Bayesian analysis assumes that each of the parameters are independent and identically distributed (i.i.d.). If one parameter depends on the value of others, it is no longer i.i.d. Finally, fixing a parameter reduces the complexity of the modeling. Because the value for the parameter does not need to be sampled out of random distribution each time a point is evaluated, the MCMC requires less compute time. 
 
-Two methods were used to determine which model parameters should be considered fixed: sensitivity analysis and MCMC. Sensitivity analysis is the process of quantifying how much a change in an input parameter changes the output parameters of the system. If a parameter is insensitive, it means that changing its value has little or no effect on the model's behavior. This is a means of determining that a parameter is unidentifiable as there is not definitive way of relating the parameter to the output of the system. % reference sensitivity analysis.
+Two methods were used to determine which model parameters should be considered fixed: sensitivity analysis and MCMC. Sensitivity analysis is the process of quantifying how much a change in an input parameter changes the output parameters of the system. If a parameter is insensitive, it means that changing its value has little or no effect on the model's behavior. This is a means of determining that a parameter is unidentifiable as there is not definitive way of relating the parameter to the output of the system (see Section \ref{sec:SensA}). As for MCMC, the chains of each parameter can be plotted against one another. If during this process a clear dependency is shown between variables, the parameter set must be reduced to ensure that the i.i.d. condition is satisfied (see Section \ref{sec:UQ}).
 
 \subsection{Model Description}
 
-Four of the parameters of this system describe its geometry Most of these parameters are displayed in Figure \ref{fig:SpringAnnotated}. A parameter not shown in \ref{fig:SpringAnnotated} is the Width $w$, which is the dimension into the page. This is a constant value for all of the components of the spring. Two more parameters, $\alpha$ and $E$, are included but do not relate to geometry. The definition of $\alpha$ is included in Equation \ref{eqn:kD}. $E$ is the measure of the Young's modulus for the spring.
+Four of the parameters of this system describe its geometry. Most of these parameters are displayed in Figure \ref{fig:SpringAnnotated}. A parameter not shown in \ref{fig:SpringAnnotated} is the Width $w$, which is the dimension into the page. This is a constant value for all of the components of the spring. Two more parameters, $\alpha$ and $E$, are included but do not relate to geometry. The parameter $\alpha$ relates to damping and is defined in Equation \ref{eqn:kD}. $E$ is the measure of the Young's modulus for the spring.
 
 The set of parameters $\theta$ that will be considered random variables for uncertainty quantification are the aforementioned parameters:
 
@@ -62,7 +62,6 @@ The set of parameters $\theta$ that will be considered random variables for unce
 	\label{eqn:OGParms}
 \end{equation}
 
-Below, this set is reduced using local sensitivity analysis. 
 
 \begin{figure}[H]
     \centering
@@ -90,7 +89,7 @@ This system is modeled to behave as if it is a spring-mass-damper system. All of
 
 The stiffness of this system is determined using the results derived by Wang et al. In this analysis, the characteristics of a micro-electro-mechanical system (MEMS) are determined through simulation and Finite Element Analysis (FEA). This MEMS structure is similar to the spring structure proposed in this analysis. The result of this analysis is that a stiffness matrix can be formed based solely on the properties of the materials and the shape of the MEMS structure. Because this derivation is quite complex, it will not be included. However, the stiffness matrix will herein be referred to as $\vec{K}$. \cite{mems}
 
-Because this model is only using one degree of freedom, the effective spring constant can be extracted from $\vec{K}$ with the operation shown in Equations \ref{eqn:uK1} and \ref{eqn:uK2}. In Equation \ref{eqn:uK1}, $u$ represents a unit vector in the direction of the model's degree of freedom.
+Because this model has only one degree of freedom, the effective spring constant $k_s$ can be extracted from $\vec{K}$ as shown in Equations \ref{eqn:uK1} and \ref{eqn:uK2}. In Equation \ref{eqn:uK1}, $u$ represents a unit vector in the direction of the model's degree of freedom.
 
 \begin{equation}
 	u = \begin{bmatrix}
@@ -103,7 +102,7 @@ Because this model is only using one degree of freedom, the effective spring con
 	\label{eqn:uK2}
 \end{equation}
 
-The damping of this system was assumed to come only from drag. Typically, drag is a function of the square of velocity. This causes the model to be more complex due to nonlinearities. To reduce the complexity, a first order Taylor series approximation of the drag is taken. Because the velocity of the spring is relatively small, the reference point for this approximation is taken at a speed of zero. This approximation simplifies to the first-order time derivative of drag. Also, it is assumed that the drag will act in equal magnitude in both directions. Furthermore, a scaling term $\alpha$ is included to account for any unmodeled properties of the spring that contribute to drag. The damping coefficient used for the spring is shown below in Equation \ref{eqn:kD}.
+The damping of this system was assumed to come only from drag. Typically, drag is a function of the square of velocity. This causes the model to be more complex due to nonlinearities. To reduce the complexity, a first order Taylor series approximation of the drag is taken. Because the velocity of the spring is centered about zero, the reference point for this approximation is taken at a speed of zero. This approximation simplifies to the first-order time derivative of drag.  Furthermore, a scaling term $\alpha$ is included to account for any unmodeled properties of the spring that contribute to drag. The damping coefficient used for the spring is shown below in Equation \ref{eqn:kD}. This coefficient is assumed to be constant regardless of the direction of the springs motion.
 
 \begin{equation}
 	k_d = \alpha C_d \rho A
@@ -166,12 +165,12 @@ To define the ideal behavior, the values $ks$, $kd$ and $m$ were defined as 200,
 
 A genetic algorithm was applied to determine the optimal set of parameters to match the model to the ideal response. The cost function used for this algorithm was the Root Sum of Squares (RSS) of the model's response and the ideal spring's response. The set of parameters to achieve this fit was found to be:
 
-
-
 \begin{equation}
 	\theta_{opt} = \input{optimizedParams.tex}
 \label{eq:ThOpt}
 \end{equation}
+
+Figure \ref{fig:IdealResponseFull} depicts the behavior of the ideal spring and the modeled spring, and Figure \ref{fig:ErrorFull} shows the percent error between these two results.
 
 \begin{figure}[H]
     \centering
@@ -179,27 +178,28 @@ A genetic algorithm was applied to determine the optimal set of parameters to ma
         \centering
 	    \includegraphics[width= \linewidth]{FullParamSetOptimization.jpg}
 	    \caption{Ideal Spring Response}
-	    \label{fig:IdealResponse}
+	    \label{fig:IdealResponseFull}
     \end{subfigure}%
     ~ 
     \begin{subfigure}[t]{0.5\textwidth}
        \centering
     \includegraphics[width=\linewidth]{FullParamSetOptimizationError.jpg}
     \caption{Model Response}
-    \label{fig:SpringCompressed}
+    \label{fig:ErrorFull}
     \end{subfigure}
     \caption{Ideal and Model Responses}
 \end{figure}
 
 \subsection{Sensitivity Analysis}
+\label{sec:SensA}
 
-The parameter set described in Equation \ref{eq:ThOpt} was used as the fixed point for sensitivity analysis using finite differerencing.
+The parameter set $\theta_{opt}$ described in Equation \ref{eq:ThOpt} was used as the fixed point for sensitivity analysis using complex step methods.
 
 There are other optimized sets of model parameters, however these combinations tend to create a spring which is not feasible to manufacture, namely because they become very tall and thin. For this reason, local sensitivity was considered to be appropriate to avoid entering these regions.
 
-Furthermore, finite differencing was utilized as the computational load of the model is small and this method is naive to the system's dynamics. This allows for fine tuning of the model in the future without affecting the efficacy of the sensitivity analysis. Complex step method was not utilized due to the unstable affects of using complex number to define dimensions.
+Complex step analysis works by approximating the derivative of the function with respect to a model parameter. The reason this method is used instead of finite differencing is that the step sizes can be much smaller, offering better accuracy. \cite{Ralph}
 
-Starting at the fixed point, each model parameter was perturbed using finite differencing. A scaled distance $\Delta$ is defined for each model parameter $\theta_{opt}^i $ such that the maximum value is $\theta_{opt}^i +  \Delta \theta_{opt}^i  $ and the minimum value is  $\theta_{opt}^i  -  \Delta \theta_{opt}^i  $ . By repeating this process over multiple test points for each model parameter, an approximation of the Jacobian of the model near the fixed point is defined as $S$. Each of these sensitivities is plotted against the test points that were used, as shown in Figure \ref{fig:LocalSens}.
+By applying complex step analysis over multiple test points for each model parameter, an approximation of the Jacobian of the model near the fixed point is defined as $S$. Each of these sensitivities is plotted against the test points that were used, as shown in Figure \ref{fig:LocalSens}.
 
 \begin{figure}[H]
     \centering
@@ -208,7 +208,7 @@ Starting at the fixed point, each model parameter was perturbed using finite dif
     \label{fig:LocalSens}
  \end{figure}
  
- From Figure \ref{fig:LocalSens}, it can be concluded that $\theta_5$ is insensitive and therefore is unidentifiable. For this reason, the parameter set, defined in Equation \ref{eqn:OGParms}, can be reduced to:
+ From Figure \ref{fig:LocalSens}, it can be concluded that $\theta_5$ is insensitive and therefore is unidentifiable. This is due to the sensitivity of this parameter being multiple orders of magnitude smaller than the other parameters. For this reason, the parameter set, defined in Equation \ref{eqn:OGParms}, can be reduced to:
  
  \begin{equation}
 \theta_{RED} =
@@ -218,37 +218,35 @@ Starting at the fixed point, each model parameter was perturbed using finite dif
 	\label{eqn:RedParms}
 \end{equation}
  
- Using the genetic algorithm described in Section \ref{sec:GA}, this reduced set of parameters was optimized. Figure \ref{fig:OptFit} below shows the results of this parameter fitting.
+ Using the genetic algorithm described in Section \ref{sec:GA}, this reduced set of parameters was optimized to best fit the ideal spring's behavior. Figure \ref{fig:IdealResponseRed} below shows the results of this parameter fitting and \ref{fig:IdealResponseRedPE} shows the percent error between these responses.
  
 \begin{figure}[H]
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
 	    \includegraphics[width= \linewidth]{RedParamSetOptimization.jpg}
-	    \caption{Ideal Spring Response}
-	    \label{fig:IdealResponse}
+	    \caption{Ideal and Model Spring Response}
+	    \label{fig:IdealResponseRed}
     \end{subfigure}%
     ~ 
     \begin{subfigure}[t]{0.5\textwidth}
        \centering
     \includegraphics[width=\linewidth]{RedParamSetOptimizationError.jpg}
-    \caption{Model Response}
-    \label{fig:SpringCompressed}
+    \caption{Percent Error}
+    \label{fig:IdealResponseRedPE}
     \end{subfigure}
     \caption{Ideal and Model Responses}
 \end{figure}
  
 \section{Uncertainty Quantification}
 % Four plots. Make sure theta is defined
+\label{sec:UQ}
 
 Uncertainty quantification for each of the parameters in the full set and the reduced set was conducted using MCMC methods. 
 
 \subsection{Data Generation}
 
 Because no experiments were conducted, artificial data were created to run MCMC with. For a given `trial,' random noise was added to each point of the ideal spring response. This was repeated for a total of 20 `experimental runs' of the system. The random noise for each point was sampled from the distribution $(1/15) \sim R(0, 0.2)$. This data set is shown below in Figure \ref{fig:GenData}.
-
-
-
 
 \begin{figure}[H]
     \centering
@@ -259,65 +257,68 @@ Because no experiments were conducted, artificial data were created to run MCMC 
  
 % Full Set
 \subsection{Full Parameter Set $\theta$}
+\label{Sec:FullUQ}
 
 The results of the MCMC for the full parameter set is shown below. Figure \ref{fig:FullChains} shows that each of the parameters do not converge to a Gaussian distribution. This indicates that the model has dependencies that have not been accounted for or that the chains are not `burned in.' Burned in chains refere to chains which form a normal distribution about a singular value. In fact, Figure \ref{fig:FullChainPanel} shows that none of the parameters have reached a burned in region. Reducing the parameter set, choosing different initial values, and increasing the sampling iterations of the MCMC algorithm will be used to improve these results. 
 
 
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[t]{0.6\textwidth}
+    \begin{subfigure}[t]{0.5\textwidth}
         \centering
     \includegraphics[width= \linewidth]{FullParamSetChains.jpg}
-    \caption{Model Fitting with $\theta_{RED}$}
+    \caption{Parameter Chains Probabilities for $\theta$}
     \label{fig:FullChains}
     \end{subfigure}%
     ~ 
-    \begin{subfigure}[t]{0.4\textwidth}
+    \begin{subfigure}[t]{0.5\textwidth}
      \centering
     \includegraphics[width= \linewidth]{FullParamSetChainPanel.jpg}
-    \caption{Model Fitting with $\theta_{RED}$}
+    \caption{Parameter Chains Iterations for $\theta$}
     \label{fig:FullChainPanel}
     \end{subfigure}
     \caption{Ideal and Model Responses}
 \end{figure}
 
 
-The response of each parameter was plotted against the response of every other parameter, as shown in Figure \ref{FullPairs}. A number of dependencies between parameters are made apparent by this figure, namely those between $w$ and $L$, and $\alpha$ and $L$ and $w$.
+The response of each parameter was plotted against the response of every other parameter, as shown in Figure \ref{fig:FullPairs}. A number of dependencies between parameters are made apparent by this figure: $w$ and $L$; and $\alpha$ and both $L$ and $w$.
 
 
  \begin{figure}[H]
     \centering
     \includegraphics[width=.75  \linewidth]{FullParamSetPairs.jpg}
-    \caption{Model Fitting with $\theta_{RED}$}
+    \caption{Parameter Pairs for $\theta$}
     \label{fig:FullPairs}
  \end{figure}
 
 % Reduced set
  \subsection{Reduced Parameter Set $\theta_{RED}$}
+ \label{sec:RedUQ}
  
- The parameter set $\theta_{RED}$ is further reduced to account for the results in the previous section. Herein, $\theta_{RED}$ is defined by Equation \ref{eqn:ThetaRedRed}.
+ The parameter set $\theta$ is reduced to account for the results in Section \ref{Sec:FullUQ}, the sensitivity analysis results shown in Section \ref{sec:SensA}, and iterative MCMC runs used to ensure all parameters were identifiable. Herein, $\theta_{RED}$ is defined by Equation \ref{eqn:ThetaRedRed}.
  
  \begin{equation}
  	\theta_{RED} = \begin{bmatrix}
- 		L & r & w & E\\
+ 		L &  t & E\\
  	\end{bmatrix}
+ 	\label{eqn:ThetaRedRed}
  \end{equation}
  
- The results of the MCMC for the reduced parameter set is shown below. Figure \ref{fig:RedChains} shows that these parameters have begun to converge to a 
+ The results of the MCMC for the reduced parameter set is shown below. Figure \ref{fig:RedChains} shows that these parameters have begun to converge to singular values.
  
 \begin{figure}[H]
     \centering
-    \begin{subfigure}[t]{0.6\textwidth}
+    \begin{subfigure}[t]{0.5\textwidth}
         \centering
     \includegraphics[width= \linewidth]{RedParamSetChains.jpg}
-    \caption{Model Fitting with $\theta_{RED}$}
+    \caption{Parameter Chains Probabilities for $\theta_{RED}$}
     \label{fig:RedChains}
     \end{subfigure}%
     ~ 
-    \begin{subfigure}[t]{0.4\textwidth}
+    \begin{subfigure}[t]{0.5\textwidth}
      \centering
     \includegraphics[width= \linewidth]{RedParamSetChainPanel.jpg}
-    \caption{Model Fitting with $\theta_{RED}$}
+    \caption{Parameter Chains Iterations for $\theta_{RED}$}
     \label{fig:RedChainPanel}
     \end{subfigure}
     \caption{Ideal and Model Responses}
@@ -330,20 +331,31 @@ The response of each parameter was plotted against the response of every other p
     \caption{Model Fitting with $\theta_{RED}$}
     \label{fig:OptFit}
  \end{figure}
+ 
+ Now that the parameter set is finalized, the uncertainty of the model can be quantified. This is shown below in Figure \ref{fig:ConfRed}. 
+ 
+  \begin{figure}[H]
+    \centering
+    \includegraphics[width=.75  \linewidth]{RedParamSetConfidence.jpg}
+    \caption{95\% Confidence Interval with $\theta_{RED}$}
+    \label{fig:ConfRed}
+ \end{figure}
 
 
 \section{Concluding Remarks}
-% Key findings. How did parameters affect QoI?
+% Key findings. What is the most or least certain? How did parameters affect QoI?
+
+
+
+The MCMC methods were not able to satisfactorily converge on parameter values when the whole set of parameters $\theta$ were defined to be random, as demonstrated in Section \ref{Sec:FullUQ}. This required that the parameter set be reduced, yielding model parameters that converge appropriatlely. These results are shown in \ref{sec:RedUQ}.
+
+The most certain parameters are... and the least certain parameters were found to be ...
+
+In Section \ref{sec:SensA}, it is shown that the parameter $\alpha$ can be set as fixed as its sensitivity is far less than those of the other parameters. This is to be expected as the damping of the ideal system is relatively low, and $\alpha$ solely affects the damping $k_d$ of the system. Otherwise, each parameter has a similar influence on the quantity of interest (RSS between modeled and ideal responses).
+
 
 \newpage
 \printbibliography
 
 
 \end{document}
-
-\subsection{Proposed Statistical Methods}
-% Write about monte carlo
-
-%In the future, uncertainty quantification will be performed on this system to quantify each of the system parameters. To do this, Markov Chain Monte Carlo (MCMC) sampling will be applied. This method is selected as it allows parameter uncertainty to be determined for all parameters. Also, MCMC will help to explore a wide range of combinations for each of the parameters. This is necessary for this model as optimizations have demonstrated a number of modes for spring parameters. These modes include springs that have: very large $r$ and $t$ values but very small $L$ values; very large $r$ and $L$ values but very small $t$ values; and balanced $r$ $L$, and $t$ values. For each of these modes, the value of $w$ is typically very small. By exploring the entire parameter space, it may be possible to find equivalent springs that are constructed in different modes, allowing for more flexibility in design.
-%
-%To simulate measurement noise and dimensional errors in the spring's construction, Gaussian noise will be added to each of the sample points of candidate springs used when matching the model to the ideal spring. 

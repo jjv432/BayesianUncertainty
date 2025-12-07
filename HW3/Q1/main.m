@@ -53,6 +53,7 @@ hold off
 xlabel('t (s)')
 ylabel('y (m)')
 legend('Data','Model','Location','NorthWest')
+saveas(gcf, "../Reports/InitialGuess.jpg");
 
 %%
 % The Bayesian analysis is calculated here.
@@ -75,14 +76,17 @@ chainstats(chain,results) %print chain statistics
 
 figure(2)
 mcmcplot(chain(:,:),[],results,'denspanel',2);
+saveas(gcf, "../Reports/Chains.jpg");
 
 figure(3); clf
 mcmcplot(chain(:,:),[],results.names,'chainpanel')
 xlabel('Iterations','Fontsize',24)
 ylabel('Parameter value','Fontsize',24)
+saveas(gcf, "../Reports/ChainPanel.jpg");
 
 figure(4)
 mcmcplot(chain,[],results,'pairs');
+saveas(gcf, "../Reports/Pairs.jpg");
 
 %%
 % Compute the credible and prediction intervals
@@ -101,3 +105,4 @@ hold off
 xlabel('t (s)','Fontsize',24);
 ylabel('\delta (mm)','Fontsize',24);
 legend('95% Prediction Interval','95% Credible Interval','Model Fit','Simulated Data','Location','Best')
+saveas(gcf, "../Reports/Confidence.jpg");

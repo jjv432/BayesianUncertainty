@@ -56,6 +56,32 @@
       \field{pages}{1989\bibrangedash 1996}
       \range{pages}{8}
     \endentry
+    \entry{Ralph}{book}{}{}
+      \name{author}{1}{}{%
+        {{hash=fabaa75c178763573d5117d9f580b329}{%
+           family={Smith},
+           familyi={S\bibinitperiod},
+           given={Ralph\bibnamedelima C.},
+           giveni={R\bibinitperiod\bibinitdelim C\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {siam}%
+      }
+      \strng{namehash}{fabaa75c178763573d5117d9f580b329}
+      \strng{fullhash}{fabaa75c178763573d5117d9f580b329}
+      \strng{fullhashraw}{fabaa75c178763573d5117d9f580b329}
+      \strng{bibnamehash}{fabaa75c178763573d5117d9f580b329}
+      \strng{authorbibnamehash}{fabaa75c178763573d5117d9f580b329}
+      \strng{authornamehash}{fabaa75c178763573d5117d9f580b329}
+      \strng{authorfullhash}{fabaa75c178763573d5117d9f580b329}
+      \strng{authorfullhashraw}{fabaa75c178763573d5117d9f580b329}
+      \field{sortinit}{2}
+      \field{sortinithash}{8b555b3791beccb63322c22f3320aa9a}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Uncertainty Quantification: Theory, Implementation, and Applications}
+      \field{year}{2024}
+    \endentry
   \enddatalist
 \endrefsection
 \endinput
