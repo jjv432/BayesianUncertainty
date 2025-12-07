@@ -8,7 +8,7 @@ addpath("src/kde");
 m = 5;
 
 maxTime = 5;
-numSimPoints = 1e3;
+numSimPoints = 1e4;
 simTime = linspace(0, maxTime, numSimPoints);
 
 %% Define the ideal response for the model
@@ -28,7 +28,8 @@ set = 1:6;
 % run the optimization
 [optimizedSpring, h] = runOptimization(m, simTime, yIdeal, tIdeal, set);
 hold off;
-saveas(h, "Reports/FullParamSetOptimization.jpg");
+saveas(h.h1, "Reports/FullParamSetOptimization.jpg");
+saveas(h.h2, "Reports/FullParamSetOptimizationError.jpg");
 
 % animate the behavior of the ideal spring
 [y, t] = optimizedSpring.getResponse(simTime);
@@ -93,11 +94,12 @@ saveas(h.h4, "Reports/FullParamSetPairs.jpg");
 %%%%%%%%%%%%%%%%%%%%%%%%%%%% REDUCED SET %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
-set = [1:4, 6];
+set = [1:2, 4, 6];
 % run the optimization
 [optimizedSpring, h] = runOptimization(m, simTime, yIdeal, tIdeal, set);
 hold off;
-saveas(h, "Reports/RedParamSetOptimization.jpg");
+saveas(h.h1, "Reports/RedParamSetOptimization.jpg");
+saveas(h.h2, "Reports/RedParamSetOptimizationError.jpg");
 
 % animate the behavior of the ideal spring
 [y, t] = optimizedSpring.getResponse(simTime);
@@ -141,14 +143,15 @@ data.xdata = tIdeal;
 ydata = [];
 
 for i = 1:20
-    randVals = 2*rand(numel(tIdeal), 1) - 1;
+    randVals = normrnd(0, .2, [numel(tIdeal), 1]);
     randVals = randVals / 15;
     ydata = [ydata, randVals + yIdeal];
 end
 data.ydata = ydata;
-initVals = fixedPoint;
-% initVals = [0.41, 6e-3, .49, .3, 7.7, 9e9];
+
+initVals = [0.4121, .009663, .49, .4885, 7.7, 4969670000];
 initNames = {'L', 't', 'w', 'r', 'alpha', 'E'};
+
 h = runUQ(data, initVals, initNames, m, yIdeal, set);
 
 saveas(h.h1, "Reports/RedParamSetInitialGuess.jpg");

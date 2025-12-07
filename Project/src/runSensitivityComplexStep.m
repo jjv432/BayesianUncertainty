@@ -4,7 +4,10 @@ function [S, handle] = runSensitivityComplexStep(mass, yIdeal, tIdeal, simTime, 
     testPointMatrix = [];
     S = [];
     del = 0.05;
-    numSamples = 1e4;
+    % numSamples = 1e4;
+    numSamples = 1e2;
+
+    row = 1;
 
     for i = set % every free parameter
         minStep = fixedPoint(i)*(1-del);
@@ -16,37 +19,50 @@ function [S, handle] = runSensitivityComplexStep(mass, yIdeal, tIdeal, simTime, 
             testPoint = fixedPoint;
             testPoint(i) = x + 1i * h;
             curS = imag(ModelSimulationCost(testPoint, yIdeal)) / h;
-            S(i, j) = curS;
+            S(row, j) = curS;
         end
+
+        row = row + 1;
     end
 
+
     %** Scaling
-    p0 = fixedPoint;
+    p0 = [];
+    ctr = 1;
+    for j = 1:numel(set)
+        p0(ctr) = fixedPoint(set(j));
+        ctr = ctr + 1;
+    end
+
+
     scaler = p0/1;
 
-    for k = 1:set
+    for k = 1:numel(set)
         S(k, :) = S(k, :) * scaler(k);
     end
 
 
     %** Plot sensitivities
-    possibleParamNames = ['L', 't', 'w', 'r', "\alpha", 'E'];
-    paramNames = possibleParamNames(set);
+    paramNames = ['L', 't', 'w', 'r', "\alpha", 'E'];
+    paramNames = paramNames(set);
 
     figure('WindowState','maximized')
-    for a = set
-        subplot(3, 2, a);
-        plot((testPointMatrix(a, :) - fixedPoint(a))/fixedPoint(a), S(a, :), 'k', "LineWidth", 3)
-        ylabel("S (\theta_" + string(a) + ")", 'fontweight', 'bold');
-        xlabel('%\Delta' + paramNames(a), 'fontweight', 'bold');
-        grid on
-        ax = gca; % Get the current axes object
-        ax.FontSize = 14;
+    ctr = 1;
+    for a = 1:numel(fixedPoint)
+        if (ismember(a, set))
+            subplot(3, 2, ctr);
+            plot((testPointMatrix(a, :) - fixedPoint(a))/fixedPoint(a), S(ctr, :), 'k', "LineWidth", 3)
+            ylabel("S (\theta_" + string(a) + ")", 'fontweight', 'bold');
+            xlabel('%\Delta' + paramNames(ctr), 'fontweight', 'bold');
+            grid on
+            ax = gca; % Get the current axes object
+            ax.FontSize = 14;
+            ctr = ctr + 1;
+        end
+
     end
     handle = gcf;
     % sgtitle('Local Sensitivities');
-    % saveas(gcf, "Reports/LocalSens.jpg");
-
 
     function Cost = ModelSimulationCost(fp, yIdeal)
         s = newSpring(fp(1), fp(2), fp(3), fp(4), mass, fp(5), fp(6));

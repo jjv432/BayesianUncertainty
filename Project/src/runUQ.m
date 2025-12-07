@@ -1,4 +1,4 @@
-function [handles] = runUQ(data, initVals, initNames, mass, yIdeal, set)
+function [handles] = runUQ(data, initVals, initNames, mass, yIdeal, paramsToVary)
     %% Uncertainty Analysis
 
     addpath('mcmcstat')
@@ -12,11 +12,13 @@ function [handles] = runUQ(data, initVals, initNames, mass, yIdeal, set)
 
     %model parameter range
     params = {};
-    for i = set
-        params{i,1} = initNames{i};
-        params{i,2} = initVals(i);
-        params{i,3} = 0;
-        params{i,4} = inf;
+    ctr = 1;
+    for i = paramsToVary
+        params{ctr,1} = initNames{i};
+        params{ctr,2} = initVals(i);
+        params{ctr,3} = 0;
+        params{ctr,4} = inf;
+        ctr = ctr + 1;
     end
 
     A = params;  % example 6x4 cell array
@@ -32,8 +34,24 @@ function [handles] = runUQ(data, initVals, initNames, mass, yIdeal, set)
     ssfun = @ModelSimulationCost;
     model.ssfun=ssfun;
 
+    possibleStates = 1:6;
+    constantState = ismember(possibleStates, paramsToVary);
+    constants(1:6) = initVals; %[0.41, 6e-3, .49, .3, 7.7, 9e9];
+
+
     function Cost = ModelSimulationCost(fp, data)
-        s = newSpring(fp(1), fp(2), fp(3), fp(4), mass, fp(5), fp(6));
+        p = [];
+        ctr = 1;
+        for i = possibleStates(1):possibleStates(end)
+            if (constantState(i) == 0)
+                p(i) = constants(i);
+            else
+                p(i) = fp(ctr);
+                ctr = ctr +1;
+            end
+        end
+        
+        s = newSpring(p(1), p(2), p(3), p(4), mass, p(5), p(6));
 
         y = s.getResponse(data.xdata);
 
@@ -49,7 +67,7 @@ function [handles] = runUQ(data, initVals, initNames, mass, yIdeal, set)
     spring = newSpring(initVals(1), initVals(2), initVals(3), initVals(4), mass, initVals(5), initVals(6));
     y_model = spring.getResponse(data.xdata);
 
-    figure(1)
+    figure('WindowState','maximized')
     plot(data.xdata,data.ydata(:,:),'x','MarkerSize',3,'Linewidth',2)
     hold on
     plot(data.xdata,y_model,'r-','Linewidth',3)
@@ -78,19 +96,19 @@ function [handles] = runUQ(data, initVals, initNames, mass, yIdeal, set)
     % correlations will not plot except for the nonlinear case where there is
     % more than one parameter.
 
-    figure(2)
+    figure('WindowState','maximized')
     mcmcplot(chain(:,:),[],results,'denspanel',2);
     % saveas(gcf, "Reports/UQPlots/Chains.jpg");
     handles.h2 = gcf;
 
-    figure(3); clf
+    figure('WindowState','maximized'); clf
     mcmcplot(chain(:,:),[],results.names,'chainpanel')
     xlabel('Iterations','Fontsize',24)
     ylabel('Parameter value','Fontsize',24)
     % saveas(gcf, "Reports/UQPlots/ChainPanel.jpg");
     handles.h3 = gcf;
 
-    figure(4)
+    figure('WindowState','maximized')
     mcmcplot(chain,[],results,'pairs');
     saveas(gcf, "Reports/Pairs.jpg");
     handles.h4 = gcf;

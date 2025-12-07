@@ -20,7 +20,7 @@ function [os, handle] = runOptimization(mass, simTime, yIdeal, tIdeal, paramsToV
 
     possibleStates = 1:6;
     constantState = ismember(possibleStates, paramsToVary);
-    constants(1:6) = [100, 10, 100, 10, 100, 10];
+    constants(1:6) = [0.41, 6e-3, .49, .3, 7.7, 9e9];
 
 
     % Cost function handle
@@ -74,13 +74,23 @@ function [os, handle] = runOptimization(mass, simTime, yIdeal, tIdeal, paramsToV
 
     figure;
     hold on
-    plot(t_out, yIdeal, "LineWidth", 10)
-    plot(t_out, yOptimized, '*k')
+    plot(t_out, yIdeal, "LineWidth", 10, 'DisplayName', 'Ideal')
+    plot(t_out, yOptimized, '*k', 'DisplayName', 'Model')
     xlabel("Time (s)");
     ylabel("Spring Height (m)");
     title("Real and Ideal Spring Response");
     grid on
     hold off
+    handle.h1 = gcf;
 
-    handle = gcf;
+    figure;
+    hold on
+    plot(t_out, 100*(yOptimized - yIdeal)./(yIdeal), '.k', "MarkerSize", 5)
+    xlabel("Time (s)");
+    ylabel("Percent Error");
+    ylim([-30, 30]);
+    title("Real and Ideal Spring Response");
+    grid on
+    hold off
+    handle.h2 = gcf;
 end

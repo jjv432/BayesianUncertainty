@@ -99,14 +99,14 @@ Because this model is only using one degree of freedom, the effective spring con
 	\label{eqn:uK1}
 \end{equation}
 \begin{equation}
-	K_s = u^T \vec{K} u
+	k_s = u^T \vec{K} u
 	\label{eqn:uK2}
 \end{equation}
 
 The damping of this system was assumed to come only from drag. Typically, drag is a function of the square of velocity. This causes the model to be more complex due to nonlinearities. To reduce the complexity, a first order Taylor series approximation of the drag is taken. Because the velocity of the spring is relatively small, the reference point for this approximation is taken at a speed of zero. This approximation simplifies to the first-order time derivative of drag. Also, it is assumed that the drag will act in equal magnitude in both directions. Furthermore, a scaling term $\alpha$ is included to account for any unmodeled properties of the spring that contribute to drag. The damping coefficient used for the spring is shown below in Equation \ref{eqn:kD}.
 
 \begin{equation}
-	K_d = \alpha C_d \rho A
+	k_d = \alpha C_d \rho A
 \label{eqn:kD}
 \end{equation}
 
@@ -154,7 +154,7 @@ D = \begin{bmatrix}
 \end{bmatrix}
 \end{equation}
 
-where $ks$ is the spring constant,  $kd$ is the damping coefficient, and  $m$ is the mass.
+where $ks$ is the spring constant,  $kd$ is the damping coefficient, and  $m$ is the mass for both the idealized and modeled springs.
 
 \subsubsection{Defining the Ideal Behavior}
 \label{sec:Ideal}
@@ -177,14 +177,14 @@ A genetic algorithm was applied to determine the optimal set of parameters to ma
     \centering
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
-	    \includegraphics[width= \linewidth]{IdealSpringResponse.jpg}
+	    \includegraphics[width= \linewidth]{FullParamSetOptimization.jpg}
 	    \caption{Ideal Spring Response}
 	    \label{fig:IdealResponse}
     \end{subfigure}%
     ~ 
     \begin{subfigure}[t]{0.5\textwidth}
        \centering
-    \includegraphics[width=\linewidth]{RealAndIdealSpringResponse.jpg}
+    \includegraphics[width=\linewidth]{FullParamSetOptimizationError.jpg}
     \caption{Model Response}
     \label{fig:SpringCompressed}
     \end{subfigure}
@@ -208,81 +208,121 @@ Starting at the fixed point, each model parameter was perturbed using finite dif
     \label{fig:LocalSens}
  \end{figure}
  
- From Figure \ref{fig:LocalSens}, it can be concluded that $\theta_1$ is insensitive and therefore is unidentifiable. For this reason, the parameter set, defined in Equation \ref{eqn:OGParms}, can be reduced to:
+ From Figure \ref{fig:LocalSens}, it can be concluded that $\theta_5$ is insensitive and therefore is unidentifiable. For this reason, the parameter set, defined in Equation \ref{eqn:OGParms}, can be reduced to:
  
  \begin{equation}
 \theta_{RED} =
 	\begin{bmatrix}
-		r & t & w & \alpha \\
+		L& r & t & w &E \\
 	\end{bmatrix} ^T
 	\label{eqn:RedParms}
 \end{equation}
  
  Using the genetic algorithm described in Section \ref{sec:GA}, this reduced set of parameters was optimized. Figure \ref{fig:OptFit} below shows the results of this parameter fitting.
  
- \begin{figure}[H]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=.75  \linewidth]{Reduced_RealAndIdealSpringResponse.jpg}
-    \caption{Model Fitting with $\theta_{RED}$}
-    \label{fig:OptFit}
- \end{figure}
+    \begin{subfigure}[t]{0.5\textwidth}
+        \centering
+	    \includegraphics[width= \linewidth]{RedParamSetOptimization.jpg}
+	    \caption{Ideal Spring Response}
+	    \label{fig:IdealResponse}
+    \end{subfigure}%
+    ~ 
+    \begin{subfigure}[t]{0.5\textwidth}
+       \centering
+    \includegraphics[width=\linewidth]{RedParamSetOptimizationError.jpg}
+    \caption{Model Response}
+    \label{fig:SpringCompressed}
+    \end{subfigure}
+    \caption{Ideal and Model Responses}
+\end{figure}
  
 \section{Uncertainty Quantification}
 % Four plots. Make sure theta is defined
 
 Uncertainty quantification for each of the parameters in the full set and the reduced set was conducted using MCMC methods. 
 
-% Full Set
+\subsection{Data Generation}
 
- \begin{figure}[H]
+Because no experiments were conducted, artificial data were created to run MCMC with. For a given `trial,' random noise was added to each point of the ideal spring response. This was repeated for a total of 20 `experimental runs' of the system. The random noise for each point was sampled from the distribution $(1/15) \sim R(0, 0.2)$. This data set is shown below in Figure \ref{fig:GenData}.
+
+
+
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=.75  \linewidth]{FullParamSetInitialGuess.jpg}
-    \caption{Model Fitting with $\theta_{RED}$}
-    \label{fig:OptFit}
+    \caption{Simulated Data}
+    \label{fig:GenData}
  \end{figure}
  
- \begin{figure}[H]
+% Full Set
+\subsection{Full Parameter Set $\theta$}
+
+The results of the MCMC for the full parameter set is shown below. Figure \ref{fig:FullChains} shows that each of the parameters do not converge to a Gaussian distribution. This indicates that the model has dependencies that have not been accounted for or that the chains are not `burned in.' Burned in chains refere to chains which form a normal distribution about a singular value. In fact, Figure \ref{fig:FullChainPanel} shows that none of the parameters have reached a burned in region. Reducing the parameter set, choosing different initial values, and increasing the sampling iterations of the MCMC algorithm will be used to improve these results. 
+
+
+\begin{figure}[H]
     \centering
-    \includegraphics[width=.75  \linewidth]{FullParamSetChains.jpg}
+    \begin{subfigure}[t]{0.6\textwidth}
+        \centering
+    \includegraphics[width= \linewidth]{FullParamSetChains.jpg}
     \caption{Model Fitting with $\theta_{RED}$}
-    \label{fig:OptFit}
- \end{figure}
- 
- \begin{figure}[H]
-    \centering
-    \includegraphics[width=.75  \linewidth]{FullParamSetChainPanel.jpg}
+    \label{fig:FullChains}
+    \end{subfigure}%
+    ~ 
+    \begin{subfigure}[t]{0.4\textwidth}
+     \centering
+    \includegraphics[width= \linewidth]{FullParamSetChainPanel.jpg}
     \caption{Model Fitting with $\theta_{RED}$}
-    \label{fig:OptFit}
- \end{figure}
- 
+    \label{fig:FullChainPanel}
+    \end{subfigure}
+    \caption{Ideal and Model Responses}
+\end{figure}
+
+
+The response of each parameter was plotted against the response of every other parameter, as shown in Figure \ref{FullPairs}. A number of dependencies between parameters are made apparent by this figure, namely those between $w$ and $L$, and $\alpha$ and $L$ and $w$.
+
+
  \begin{figure}[H]
     \centering
     \includegraphics[width=.75  \linewidth]{FullParamSetPairs.jpg}
     \caption{Model Fitting with $\theta_{RED}$}
-    \label{fig:OptFit}
+    \label{fig:FullPairs}
  \end{figure}
 
 % Reduced set
+ \subsection{Reduced Parameter Set $\theta_{RED}$}
+ 
+ The parameter set $\theta_{RED}$ is further reduced to account for the results in the previous section. Herein, $\theta_{RED}$ is defined by Equation \ref{eqn:ThetaRedRed}.
+ 
+ \begin{equation}
+ 	\theta_{RED} = \begin{bmatrix}
+ 		L & r & w & E\\
+ 	\end{bmatrix}
+ \end{equation}
+ 
+ The results of the MCMC for the reduced parameter set is shown below. Figure \ref{fig:RedChains} shows that these parameters have begun to converge to a 
+ 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=.75  \linewidth]{RedParamSetInitialGuess.jpg}
+    \begin{subfigure}[t]{0.6\textwidth}
+        \centering
+    \includegraphics[width= \linewidth]{RedParamSetChains.jpg}
     \caption{Model Fitting with $\theta_{RED}$}
-    \label{fig:OptFit}
- \end{figure}
- 
- \begin{figure}[H]
-    \centering
-    \includegraphics[width=.75  \linewidth]{RedParamSetChains.jpg}
+    \label{fig:RedChains}
+    \end{subfigure}%
+    ~ 
+    \begin{subfigure}[t]{0.4\textwidth}
+     \centering
+    \includegraphics[width= \linewidth]{RedParamSetChainPanel.jpg}
     \caption{Model Fitting with $\theta_{RED}$}
-    \label{fig:OptFit}
- \end{figure}
- 
- \begin{figure}[H]
-    \centering
-    \includegraphics[width=.75  \linewidth]{RedParamSetChainPanel.jpg}
-    \caption{Model Fitting with $\theta_{RED}$}
-    \label{fig:OptFit}
- \end{figure}
+    \label{fig:RedChainPanel}
+    \end{subfigure}
+    \caption{Ideal and Model Responses}
+\end{figure}
+
  
  \begin{figure}[H]
     \centering
