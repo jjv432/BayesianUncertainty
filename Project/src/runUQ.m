@@ -115,19 +115,30 @@ function [handles] = runUQ(data, initVals, initNames, mass, yIdeal, paramsToVary
 
     modelfun1 = @(d,th)my_mass_spring_model_Bayesian(th,d); % NOTE: the order in which d and th appear is important
 
-    nsample = 500; %number of sample iterations of the model used to construct the interval bounds
+    nsample = 1e3; %number of sample iterations of the model used to construct the interval bounds
     %the default interval bounds are 95% prediction/credible
     %bounds
     out = mcmcpred(results,chain,s2chain,data.xdata,modelfun1,nsample);
-    figure(5)
+    figure('WindowState','maximized')
     modelout = mcmcpredplot(out);
     hold on
     plot(data.xdata,data.ydata,'.','linewidth',1)
     hold off
     xlabel('t (s)','Fontsize',24);
-    ylabel('y (mm)','Fontsize',24);
+    ylabel('y (m)','Fontsize',24);
     legend('95% Prediction Interval','95% Credible Interval','Model Fit','Simulated Data','Location','Best')
     handles.h5 = gcf;
+
+    figure('WindowState','maximized')
+    modelout = mcmcpredplot(out);
+    hold on
+    plot(data.xdata,data.ydata,'.','linewidth',1)
+    hold off
+    xlabel('t (s)','Fontsize',24);
+    ylabel('y (m)','Fontsize',24);
+    legend('95% Prediction Interval','95% Credible Interval','Model Fit','Simulated Data','Location','Best')
+    xlim([0, 0.02]);
+    handles.h6 = gcf;
 
     function y = my_mass_spring_model_Bayesian(fp, data)
 

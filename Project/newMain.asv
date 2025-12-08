@@ -1,12 +1,15 @@
-clc; clearvars; close all;
+clc;
+% clearvars; 
+close all;
 addpath("src");
 addpath("src/mcmcstat");
 addpath("src/kde");
 
 runFull = 0;
-runRed = 1;
+runRed = 0;
 saveBool = 1;
 runRedChainsOnly = 1;
+runFullChainsOnly = 0;
 %% General
 % All of these units are metric
 m = 5;
@@ -26,8 +29,7 @@ idealKD = 2;
 
 animate = 0;
 initNames = {'L', 't', 'w', 'r', 'alpha', 'E'};
-yIdeal = yIdeal(:);
-data.xdata = tIdeal;
+
 
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -82,8 +84,11 @@ if runFull
         saveas(h, "Reports/FullParamSetSensitivity.jpg");
     end
 
-
+end
+if runFullChainsOnly || runFull
     %% UQ (Full Set)
+    data.xdata = tIdeal;
+
     ydata = [];
 
     for i = 1:20
@@ -92,6 +97,7 @@ if runFull
         ydata = [ydata, randVals + yIdeal];
     end
     data.ydata = ydata;
+
     initVals = fixedPoint;
     % initVals = [0.41, 6e-3, .49, .3, 7.7, 9e9];
     h = runUQ(data, initVals, initNames, m, yIdeal, set);
@@ -111,8 +117,10 @@ end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if runRed
+    
+
     %%
-    set = [3:5];
+    set = [2:4, 6];
     % run the optimization
     [optimizedSpring, h] = runOptimization(m, simTime, yIdeal, tIdeal, set);
     hold off;
@@ -159,22 +167,27 @@ if runRed
 
 end
 
-if runRed || runRedChainsOnlty
+if runRed || runRedChainsOnly
     %% UQ (RED Set)
+    data.xdata = tIdeal;
 
     ydata = [];
 
     for i = 1:20
         randVals = normrnd(0, 5e-2, [numel(tIdeal), 1]);
         randVals = randVals / 15;
-        ydata = [ydata, randVals + yeal];
+        ydata = [ydata, randVals + yIdeal];
     end
     data.ydata = ydata;
 
     initVals = fixedPoint;
-    initVals(1) = .412;
-    initVals(2) = 0.008;
-    initVals(6) = 4.112e9;
+    % initVals(1) = .412;
+    % initVals(2) = 0.008;
+    % initVals(6) = 4.112e9;
+    initVals(2) = 0.0165552;
+    initVals(3) = 0.4925;
+    initVals(4) = 1.36;
+    initVals(6) = 8.3243e+09;
 
     h = runUQ(data, initVals, initNames, m, yIdeal, set);
 

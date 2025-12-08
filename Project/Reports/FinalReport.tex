@@ -26,7 +26,7 @@ Final Report
 
 \section{Abstract}
 
-Typically, when selecting a spring, one can know with relative certainty what the spring constant will be. This is because the spring coefficient for certain spring designs and materials is well studied and characterized. However, if it is desirable to create an assembly solely with 3D printed parts, one will have difficulty applying these formulas. This is because it is difficult to reliably print a helical pattern with typical consumer grade 3D printers. To address this, an 'S' shaped spring model is introduced, and its response characterized. Sensitivity analysis is performed on this model to reduce the parameter set, and the results compared against a reference spring.
+Typically, when selecting a spring, one can know with relative certainty what the spring constant will be. This is because the spring coefficient for certain spring designs and materials is well studied and characterized. However, if it is desirable to create an assembly solely with 3D printed parts, one will have difficulty applying these formulas. This is because it is difficult to reliably print a helical pattern with typical consumer grade 3D printers. To address this, an 'S' shaped spring model is introduced, and its response characterized. Sensitivity analysis is performed on this model to reduce the parameter set, and the results compared against a reference spring. Uncertainty Quantification is performed, and it is determined that this model can be reduced to two parameters. Future work is necessary to improve the confidence of the model.
 \section{Motivation}
 % Describe the project to a layperson and include the statistaical mehtods you plan to use. Be clear on what params will be considered random params for UQ. This set may be reduced based on sensitivity analysis
 
@@ -218,25 +218,25 @@ By applying complex step analysis over multiple test points for each model param
 	\label{eqn:RedParms}
 \end{equation}
  
- Using the genetic algorithm described in Section \ref{sec:GA}, this reduced set of parameters was optimized to best fit the ideal spring's behavior. Figure \ref{fig:IdealResponseRed} below shows the results of this parameter fitting and \ref{fig:IdealResponseRedPE} shows the percent error between these responses.
- 
-\begin{figure}[H]
-    \centering
-    \begin{subfigure}[t]{0.5\textwidth}
-        \centering
-	    \includegraphics[width= \linewidth]{RedParamSetOptimization.jpg}
-	    \caption{Ideal and Model Spring Response}
-	    \label{fig:IdealResponseRed}
-    \end{subfigure}%
-    ~ 
-    \begin{subfigure}[t]{0.5\textwidth}
-       \centering
-    \includegraphics[width=\linewidth]{RedParamSetOptimizationError.jpg}
-    \caption{Percent Error}
-    \label{fig:IdealResponseRedPE}
-    \end{subfigure}
-    \caption{Ideal and Model Responses}
-\end{figure}
+% Using the genetic algorithm described in Section \ref{sec:GA}, this reduced set of parameters was optimized to best fit the ideal spring's behavior. Figure \ref{fig:IdealResponseRed} below shows the results of this parameter fitting and \ref{fig:IdealResponseRedPE} shows the percent error between these responses.
+% 
+%\begin{figure}[H]
+%    \centering
+%    \begin{subfigure}[t]{0.5\textwidth}
+%        \centering
+%	    \includegraphics[width= \linewidth]{RedParamSetOptimization.jpg}
+%	    \caption{Ideal and Model Spring Response}
+%	    \label{fig:IdealResponseRed}
+%    \end{subfigure}%
+%    ~ 
+%    \begin{subfigure}[t]{0.5\textwidth}
+%       \centering
+%    \includegraphics[width=\linewidth]{RedParamSetOptimizationError.jpg}
+%    \caption{Percent Error}
+%    \label{fig:IdealResponseRedPE}
+%    \end{subfigure}
+%    \caption{Ideal and Model Responses}
+%\end{figure}
  
 \section{Uncertainty Quantification}
 % Four plots. Make sure theta is defined
@@ -259,7 +259,7 @@ Because no experiments were conducted, artificial data were created to run MCMC 
 \subsection{Full Parameter Set $\theta$}
 \label{Sec:FullUQ}
 
-The results of the MCMC for the full parameter set is shown below. Figure \ref{fig:FullChains} shows that each of the parameters do not converge to a Gaussian distribution. This indicates that the model has dependencies that have not been accounted for or that the chains are not `burned in.' Burned in chains refere to chains which form a normal distribution about a singular value. In fact, Figure \ref{fig:FullChainPanel} shows that none of the parameters have reached a burned in region. Reducing the parameter set, choosing different initial values, and increasing the sampling iterations of the MCMC algorithm will be used to improve these results. 
+The results of the MCMC for the full parameter set is shown below. Figure \ref{fig:FullChains} shows the posteriors for each of the parameters. The larger the y-value, the more likely that the parameter will minimize the cost function. Ideally, these peaks are sharp, showing high likelihood that the correct parameter value has been chosen. In this figure, there are not sharp peaks for each of the parameters. This indicates that the model has dependencies that have not been accounted for or that the chains are not `burned in.' Burned in chains refer to chains which form a normal distribution about a singular value. In fact, Figure \ref{fig:FullChainPanel} shows that none of the parameters have reached a burned in region. This figure is a plot of the sampled value for the parameter versus the sampling iteration. The desired behavior is that the sampled points form a Gaussian distribution, which is not seen here. Reducing the parameter set, choosing different initial values, and increasing the sampling iterations of the MCMC algorithm will be used to improve these results. 
 
 
 \begin{figure}[H]
@@ -267,7 +267,7 @@ The results of the MCMC for the full parameter set is shown below. Figure \ref{f
     \begin{subfigure}[t]{0.5\textwidth}
         \centering
     \includegraphics[width= \linewidth]{FullParamSetChains.jpg}
-    \caption{Parameter Chains Probabilities for $\theta$}
+    \caption{Parameter Chains Posteriors for $\theta$}
     \label{fig:FullChains}
     \end{subfigure}%
     ~ 
@@ -281,7 +281,7 @@ The results of the MCMC for the full parameter set is shown below. Figure \ref{f
 \end{figure}
 
 
-The response of each parameter was plotted against the response of every other parameter, as shown in Figure \ref{fig:FullPairs}. A number of dependencies between parameters are made apparent by this figure: $w$ and $L$; and $\alpha$ and both $L$ and $w$.
+The response of each parameter was plotted against the response of every other parameter, as shown in Figure \ref{fig:FullPairs}. A number of dependencies between parameters are made apparent by this figure: $w$ and $L$; and $\alpha$ and both $L$ and $w$. The desired behavior for this plot is that there are no clear relationships between the parameters. Linear relationships, as are seen in the aforementioned parameter pairs, are an indication that the model is not i.i.d.
 
 
  \begin{figure}[H]
@@ -295,16 +295,16 @@ The response of each parameter was plotted against the response of every other p
  \subsection{Reduced Parameter Set $\theta_{RED}$}
  \label{sec:RedUQ}
  
- The parameter set $\theta$ is reduced to account for the results in Section \ref{Sec:FullUQ}, the sensitivity analysis results shown in Section \ref{sec:SensA}, and iterative MCMC runs used to ensure all parameters were identifiable. Herein, $\theta_{RED}$ is defined by Equation \ref{eqn:ThetaRedRed}.
+ The parameter set $\theta$ is reduced to account for the results in Section \ref{Sec:FullUQ}, the sensitivity analysis results shown in Section \ref{sec:SensA}, and iterative MCMC runs used to increase the number of identifiable parameters. Herein, $\theta_{RED}$ is defined by Equation \ref{eqn:ThetaRedRed}.
  
  \begin{equation}
  	\theta_{RED} = \begin{bmatrix}
- 		L &  t & E\\
+ 		t &  w & r & E\\
  	\end{bmatrix}
  	\label{eqn:ThetaRedRed}
  \end{equation}
  
- The results of the MCMC for the reduced parameter set is shown below. Figure \ref{fig:RedChains} shows that these parameters have begun to converge to singular values.
+ The results of the MCMC for the reduced parameter set is shown below. Each of these plots are the same ones used in Section \ref{Sec:FullUQ}. Figure \ref{fig:RedChains} shows that these parameters have begun to converge to singular values. These sharp peaks are indicative of higher confidence in the model parameters. Furthermore, in \ref{fig:RedChainPanel}, the values have begun to center around a single value and appear to form a Gaussian distribution. This is indicative of  a burned in region, and further confirms the confidence of each parameter. The values for $E$ begin to diverge as the iterations increased, which could be addressed by fixing the value of E or extending the number of sampling iterations.
  
 \begin{figure}[H]
     \centering
@@ -324,22 +324,44 @@ The response of each parameter was plotted against the response of every other p
     \caption{Ideal and Model Responses}
 \end{figure}
 
+Figure \ref{fig:OptFit} below displays the parameter correlation for the parameters in $\theta_{RED}$. Ideally, these parameters would not be showing a linear relationship with each other, as is seen with $r$ and $t$. This is indicative of some fixed relationship in the parameters. Future work should include identifying this relationship, and reducing the parameter set where possible. By writing model parameters as a function of another model parameter, the number of degrees of freedom that the MCMC algorithm has is reduced. This strategy would yield non-correlated parameters.
  
  \begin{figure}[H]
     \centering
     \includegraphics[width=.75  \linewidth]{RedParamSetPairs.jpg}
-    \caption{Model Fitting with $\theta_{RED}$}
+    \caption{Parameter Correlation for $\theta_{RED}$}
     \label{fig:OptFit}
  \end{figure}
  
- Now that the parameter set is finalized, the uncertainty of the model can be quantified. This is shown below in Figure \ref{fig:ConfRed}. 
+ Now that the parameter set is finalized, the uncertainty of the model can be quantified. This is shown below in Figure \ref{fig:ConfRed}. The 95\% credible interval refers to the interval which has a 95\% chance of  containing the random parameter, and the 95\% prediction interval refers to the interval which has a 95\% chance of containing a future observation \cite{Ralph}.
  
-  \begin{figure}[H]
+ Because the 95\% confidence interval does not contain 95\% of the data, it is clear that there are abnormalities in the model. This is likely due to the violations of i.i.d. requirements discussed earlier. Future work should include identifying the sources of these errors and eliminating them.
+% 
+% \begin{figure}[H]
+%    \centering
+%    \includegraphics[width=.75  \linewidth]{RedParamSetConfidence.jpg}
+%    \caption{95\% Confidence Interval with $\theta_{RED}$}
+%    \label{fig:ConfRed}
+%  \end{figure}
+ 
+ \begin{figure}[H]
     \centering
-    \includegraphics[width=.75  \linewidth]{RedParamSetConfidence.jpg}
+    \begin{subfigure}[t]{0.5\textwidth}
+    \centering
+    \includegraphics[width=  \linewidth]{RedParamSetConfidence.jpg}
     \caption{95\% Confidence Interval with $\theta_{RED}$}
     \label{fig:ConfRed}
- \end{figure}
+    \end{subfigure}%
+    ~ 
+    \begin{subfigure}[t]{0.5\textwidth}
+     \centering
+    \includegraphics[width= \linewidth]{RedParamSetConfidenceZoom.jpg}
+    \caption{Zoomed In 95\% Confidence Interval with $\theta_{RED}$}
+    \label{fig:RedChainPanelZoomed}
+    \end{subfigure}
+    \caption{Prediction and Confidence Intervals for $\theta_{RED}$ }
+\end{figure}
+
 
 
 \section{Concluding Remarks}
@@ -347,9 +369,9 @@ The response of each parameter was plotted against the response of every other p
 
 
 
-The MCMC methods were not able to satisfactorily converge on parameter values when the whole set of parameters $\theta$ were defined to be random, as demonstrated in Section \ref{Sec:FullUQ}. This required that the parameter set be reduced, yielding model parameters that converge appropriatlely. These results are shown in \ref{sec:RedUQ}.
+The MCMC methods were not able to satisfactorily converge on parameter values when the whole set of parameters $\theta$ were defined to be random, as demonstrated in Section \ref{Sec:FullUQ}. This required that the parameter set be reduced, yielding model parameters that converge appropriately. These results are shown in \ref{sec:RedUQ}.
 
-The most certain parameters are... and the least certain parameters were found to be ...
+The most certain parameters was $t$ and the least certain parameters were found to be $w, r, \& E$.
 
 In Section \ref{sec:SensA}, it is shown that the parameter $\alpha$ can be set as fixed as its sensitivity is far less than those of the other parameters. This is to be expected as the damping of the ideal system is relatively low, and $\alpha$ solely affects the damping $k_d$ of the system. Otherwise, each parameter has a similar influence on the quantity of interest (RSS between modeled and ideal responses).
 

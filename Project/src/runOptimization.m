@@ -16,7 +16,7 @@ function [os, handle] = runOptimization(mass, simTime, yIdeal, tIdeal, paramsToV
 
     numparticles = 128;
 
-    options = optimoptions('ga', 'PopulationSize', numparticles, 'MaxGenerations', 400);
+    options = optimoptions('ga', 'PopulationSize', numparticles, 'MaxGenerations', 800, 'UseParallel', true);
 
     possibleStates = 1:6;
     constantState = ismember(possibleStates, paramsToVary);

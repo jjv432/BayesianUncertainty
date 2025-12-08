@@ -1,12 +1,15 @@
-clc; clearvars; close all;
+clc;
+% clearvars; 
+close all;
 addpath("src");
 addpath("src/mcmcstat");
 addpath("src/kde");
 
 runFull = 0;
-runRed = 1;
+runRed = 0;
 saveBool = 1;
 runRedChainsOnly = 1;
+runFullChainsOnly = 0;
 %% General
 % All of these units are metric
 m = 5;
@@ -81,7 +84,8 @@ if runFull
         saveas(h, "Reports/FullParamSetSensitivity.jpg");
     end
 
-
+end
+if runFullChainsOnly || runFull
     %% UQ (Full Set)
     data.xdata = tIdeal;
 
@@ -90,7 +94,7 @@ if runFull
     for i = 1:20
         randVals = normrnd(0, 5e-2, [numel(tIdeal), 1]);
         randVals = randVals / 15;
-        ydata = [ydata, randVals + yIdeal];
+        ydata = [ydata, randVals + y];
     end
     data.ydata = ydata;
 
@@ -104,6 +108,7 @@ if runFull
         saveas(h.h3, "Reports/FullParamSetChainPanel.jpg");
         saveas(h.h4, "Reports/FullParamSetPairs.jpg");
         saveas(h.h5, "Reports/FullParamSetConfidence.jpg");
+        saveas(h.h6, "Reports/FullParamSetConfidenceZoom.jpg");
     end
 
 end
@@ -116,7 +121,7 @@ if runRed
     
 
     %%
-    set = [1, 4, 6];
+    set = [2:4];
     % run the optimization
     [optimizedSpring, h] = runOptimization(m, simTime, yIdeal, tIdeal, set);
     hold off;
@@ -163,7 +168,7 @@ if runRed
 
 end
 
-if runRed || runRedChainsOnlty
+if runRed || runRedChainsOnly
     %% UQ (RED Set)
     data.xdata = tIdeal;
 
@@ -172,7 +177,7 @@ if runRed || runRedChainsOnlty
     for i = 1:20
         randVals = normrnd(0, 5e-2, [numel(tIdeal), 1]);
         randVals = randVals / 15;
-        ydata = [ydata, randVals + yIdeal];
+        ydata = [ydata, randVals + y];
     end
     data.ydata = ydata;
 
@@ -180,6 +185,10 @@ if runRed || runRedChainsOnlty
     % initVals(1) = .412;
     % initVals(2) = 0.008;
     % initVals(6) = 4.112e9;
+    initVals(2) = 0.00605333;
+    initVals(3) = 0.492513;
+    initVals(4) = 0.290302;
+    % initVals(6) = 8058770000;
 
     h = runUQ(data, initVals, initNames, m, yIdeal, set);
 
@@ -189,6 +198,9 @@ if runRed || runRedChainsOnlty
         saveas(h.h3, "Reports/RedParamSetChainPanel.jpg");
         saveas(h.h4, "Reports/RedParamSetPairs.jpg");
         saveas(h.h5, "Reports/RedParamSetConfidence.jpg");
+        saveas(h.h6, "Reports/RedParamSetConfidenceZoom.jpg");
     end
 
 end
+
+%% Publishing
